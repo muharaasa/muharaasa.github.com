@@ -11,15 +11,8 @@
 
 
 
-<div style="margin:10px; padding: 10px; background:black; font-size: 14px;"><b style="color: red">I am Asa</b>
-<br><i style="color: white; border-radius:50%; padding : 10px;">i :
-<script>
-		$.getJSON('https://json.geoiplookup.io/?callback=?', function(data) {
-  let your_ip4data = (JSON.stringify(data, null, 2));
-			document.getElementById("your_ip4data").innerHTML = your_ip4data;
-});
-</script>
-</i>
+<div style="margin:10px; padding: 10px; background:black; font-size: 14px;"><b style="color: red">I am Asa</b><br>
+<i style="color: white; border-radius:50%; padding : 10px;">i :</i>
 <table style="border red 1px;  font-size:4px;"><tr><td><font size="3px" color="aqua">
 <script> 
 var garisbaru = "<br>"
@@ -48,7 +41,13 @@ var tutup = "</font>"
 document.writeln("<br/>screen.width: "+pembukaa+screen.width+tutup); document.writeln("<br/>screen.height: "+pembukaa+screen.height+tutup); document.writeln("<br/>screen.availWidth: "+pembukaa+screen.availWidth+tutup); document.writeln("<br/>screen.availHeight: "+pembukaa+screen.availHeight+tutup); document.writeln("<br/>screen.colorDepth: "+pembukaa+screen.colorDepth+tutup); document.writeln("<br/>screen.pixelDepth: "+pembukaa+screen.pixelDepth+tutup); </script> 
 
 Â </div>
-
+<script>
+	$.getJSON('https://json.geoiplookup.io/?callback=?', function(data) {
+	let your_ip4data = (JSON.stringify(data, null, 2));
+	let placefor_your_ip4data = document.getElementById("placefor_your_ip4data")
+				placefor_your_ip4data.innerHTML = your_ip4data;
+});
+</script>
 
 
 
