@@ -57,7 +57,7 @@ document.writeln("<br/>screen.width: "+pembukaa+screen.width+tutup); document.wr
 
 <script>
 	$.getJSON('https://json.geoiplookup.io/?callback=?', function(data) {
-	let your_ip4data = (JSON.stringify(data, null, 2));
+	let your_ip4data = JSON.stringify(data, null, 2);
 	let placefor_your_ip4data = document.getElementById("placefor_your_ip4data");
 	placefor_your_ip4data.innerHTML = your_ip4data;
 });
