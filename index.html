@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            xtest 23-09-2023 Mapbox ID 
+        </title>
+        <script src="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.js">
+        </script>
+        <link href="https://api.mapbox.com/mapbox-gl-js/v1.10.0/mapbox-gl.css" rel="stylesheet"/>
+        <style>
+            body { margin: 0; padding: 0; }
+	#map { 
+		position: absolute; 
+		top: 0; 
+		bottom: 0; 
+		width: 100%;
+	}
+
+	.container{
+		overflow: scroll;
+		height: 250px;
+		width: 400px;
+		position: absolute;
+		top: 20px;
+		right: 40px;
+		background-color: rgba(255, 255, 255, 0.9);
+		padding: 15px;
+		text-align: center;
+	}
+        </style>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <div class="container">
+            <h3>Tes kota di Indonesia</h3>
+			<table></table></p>
+        </div>
+		
+		<script src="list-indonesian-coordinates-details.json"></script>
+		
+<!------
+Dump paste
+<script>
+	//import myJson from './list-indonesian-coordinates-details.json' assert {type: 'json'};
+	import myJson from 'https://raw.githubusercontent.com/Hillzacky/list-coordinates-indonesian/main/list-indonesian-coordinates.json' assert {type: 'json'};
+	console.log("above I pray, "+myJson); /// badjiiiiiing 
+	/*index.html:151  Access to script at 'file:///C:/Users/muham/Downloads/save-git/xtest-asa-maptest/list-indonesian-coordinates-details.json' from origin 'null' has been blocked by CORS policy: Cross origin requests are only supported for protocol schemes: http, data, isolated-app, chrome-extension, chrome-untrusted, https, edge.*/
+</script>
+ [
+  { "city": "Burmeso", "lat": "-2.3261", "lng": "138.0414", "country": "Indonesia", "iso2": "ID", "province": "Papua", "population": "", "population_proper": "" },
+  { "city": "Trimuris", "lat": "-1.9582", "lng": "137.8366", "country": "Indonesia", "iso2": "ID", "province": "Papua", "population": "", "population_proper": "" },
+  { "city": "Kasonawejo", "lat": "-2.2818", "lng": "138.0348", "country": "Indonesia", "iso2": "ID", "province": "Papua", "population": "", "population_proper": "" },
+  { "city": "Tabilaa", "lat": "-0.3835", "lng": "124.0478", "country": "Indonesia", "iso2": "ID", "province": "Sulawesi Utara", "population": "", "population_proper": "" }
+] 
+----->
+
+<script>
+
+/* persiapan  */
+	mapboxgl.accessToken =
+    "pk.eyJ1Ijoicm9oYWl6aW1vaGFtZWQiLCJhIjoiY2swcWU3Ym1vMDduajNtcnBkN3owZXhhcSJ9.iSYAlauLQH0MrnHDgvkhug";
+var map = new mapboxgl.Map({
+    container: "map", // container id
+    style: "mapbox://styles/mapbox/dark-v10", // stylesheet location
+    center: [107.011772, 3.621469], // starting position [lng, lat] 3.621469, 107.011772
+    zoom: 6, // starting zoom  1-22
+});
+
+var control = new mapboxgl.NavigationControl();
+map.addControl(control, "top-left");
+
+
+
+/// this section is for overflow mapping
+
+let table = document.querySelector('table')
+// hirarki kerangka utama berupa tabel dibuat di sini
+/* persiapan dulu judul di atas tabel:... */
+let tr = document.createElement('tr')
+let headings = ["city","lat","lng","country","iso2","province","population_proper","population_proper"]
+	headings.forEach(name => {
+    	let th = document.createElement('th')
+    		let cellText = document.createTextNode(name)
+	   	 th.appendChild(cellText)
+   	 tr.appendChild(th)
+	});
+table.appendChild(tr)
+
+/* masukin data sebagai tabel di sini:... */
+const data = data_coordinate_id;
+
+data.forEach( 
+	element => {
+   	 let tr = document.createElement('tr'); 
+   		 Object.values(element).forEach(
+		 (value)=>{	 
+		 /* 
+		 data.forEach(.. |
+		 	~ data di sini dalam bentuk array, yang mana mengandung objek-objek di dalamnya
+				example:  [ {objek=value},{objek=value},{objek=value}... ] 
+				
+		 element => { ... |
+			~ setiap indeks dalam array ini adalah objek, 
+				tiap indeks berupa objek dalam array disini akan dilakukan suatu operasi,
+				untuk sementara, masing-masing dari indeks yang sedang dituju akan di referensikan dengan nama "element" selama masa operasi
+			
+		 object.values(element) |
+		 	~ pada data berupa array ini, setiap "objek-objek" punya "bermacam karakter dan properti" masing-masing, hal tersebut tertuang dalam "Value" setiap objek
+				misalnya kita punya objeck {rumah1 = "kastil"}, nah, kastil di sini adalah "value yang di maksud"
+				dan misal lainnya kita punya objeck  {mobil_Andi = "BMW", mobil_pak_cahya = "lamborghini"}, nah, BMW dan Lamborghini di sini adalah "value" yang di maksud
+				kodingan ini menargetkan agar hanya "value" nya saja yang ditargetkan mesin
+		 forEach( (values) => {...
+		 	~ masing-masing "value" yang di miliki tiap objek itu akan dituangkan atau digunakan sebagai apa tercantum di kodingan selanjutnya (lihat code di bawah)
+			
+		  */
+    	   	let td = document.createElement('td'); //persiapan "membuat tempat TD"untuk menampung data yang ditampilan
+     				let cellText = document.createTextNode(value) 
+     			td.appendChild(cellText); // "value" yang sudah dilapisi sebagai celltext di atas dituangkan ke TD yang disiapkan barusan
+	        tr.appendChild(td) 
+			// TD berisi suatu "value" dari objek dimasukan dalam TR(baris dalam tabel), dan operasi ini akan berlanjut hingga semua "value" dari objek yang dimaksud di tuangkan 
+    	});
+		table.appendChild(tr);
+			// TR berisi semua "value" dari objek dimasukan dalam tabel,
+			// dan operasi ini akan berlanjut hingga semua Objek dalam data berupa array itu di tuangkan 
+			
+		//console.log(Object.values(element)[0]); //=>  hasilnya adalah nama tiap kota, yaitu BURMESO, Trimuris, dsb		
+		
+		var popup = new mapboxgl.Popup({ offset: 30 }).setText("Kota: "+Object.values(element)[0]); //kl
+		new mapboxgl.Marker({ color: "#fbb01f" })
+    	.setLngLat([Object.values(element)[2], Object.values(element)[1]])
+    	.addTo(map)
+    	.setPopup(popup)
+    	.togglePopup();//kl
+});
+
+/*  code of flow start from here  */
+			
+			
+var popup = new mapboxgl.Popup({ offset: 30 }).setText("Kuala Lumpur Kes Aktif:43"); //kl
+new mapboxgl.Marker({ color: "#b40219" })
+    .setLngLat([101.684586, 3.13473])
+    .addTo(map)
+    .setPopup(popup)
+    .togglePopup();//kl
+
+
+
+
+	
+		
+		</script>
+    </body>
+</html>
