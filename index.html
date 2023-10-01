@@ -1,0 +1,299 @@
+
+<!DOCTYPE html>
+<html>
+   <head>
+    <title>Home</title>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"> 
+   <meta name="viewport" content="width=device-width, user-scalable=no" />
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="stylesheet" type="text/css" href="javascript/w3.css">
+	<link rel="stylesheet" type="text/css" href="javascript/rainDrop.css">
+	<style type="text/css">
+
+
+
+		html {
+			font-family: arial, sans-serif;
+            
+		}
+		body{margin: 0; padding: 0; font-family : serif; 
+            background-image: url("https://raw.githubusercontent.com/muharaasa/gudang/master/background/dark-red_gradation.jpg");
+            background-repeat: no-repeat; 
+            background-attachment : cover;
+                   }
+   body a{text-decoration: none;}
+
+      #transpar1{ filter: alpha(opacity=90); 
+             -khtml-opacity: 0.9; 
+             -moz-opacity: 0.9; 
+            opacity: 0.9;
+            padding: 12px ;
+            margin-top: 1px ;
+            font-family: serif; 
+            color: white;
+            font-weight: lighter;            
+            background: #7B343A;
+ }
+      #transpar1 table tr td{ filter: alpha(opacity=90); 
+             -khtml-opacity: 0.9; 
+             -moz-opacity: 0.9; 
+            opacity: 0.9;
+            padding: 3px ;
+            font-family: serif;
+            color: white;
+            font-weight: lighter;            
+            background: #7B343A;
+ }
+      #transpar1:hover,#transpar1 table tr td:hover{ filter: alpha(opacity=99); 
+             -khtml-opacity: 1.0; 
+             -moz-opacity: 1.0; 
+            opacity: 1.0;
+}
+      #transpar1 p b{ 
+            padding-right: 16px;
+            padding-left: 16px ;
+            padding-top: 8px ;
+            padding-bottom: 8px;
+            margin: 1px ;
+            font-family: cursive;
+            color: #FFFFFF;
+            font-weight: lighter;            
+            background: maroon;
+            border-radius : 100%;
+            border: 1px solid red; 
+ }
+      #transpar1 p ul{ 
+            font-family: ostrich, quicksand,exo ,serif; 
+            color: white;text-align: justify;
+            font-weight: lighter;            
+            background: #7B343A;
+ }
+
+
+.mySlides {display:none;height: 200px ;width:360px;}
+
+
+
+#navsementara{
+                background: maroon;
+                width: 100%;
+                text-align : center;
+}
+#listnavsementara{
+                padding: 5px;
+                margin: 5px;
+                color: white;
+                background: maroon;
+                font-style: italic ;
+                font-weight: lighter;
+                font-size: 19px;
+}
+#listnavsementara td a{
+                color: white;
+                font-style: italic ;
+                font-weight: lighter;
+                font-size: 19px; 
+}
+#hereweare td{
+                text-align:left;
+                padding: 6px;
+                color: white;
+                background: #6B0000;
+                font-style: bold ;
+                font-weight: normal;
+                font-size: 19px;
+}
+#hereweare td:hover{
+                color: red;
+                background: maroon;                
+}
+
+#aboutnyanavsementara:hover{                
+                color: red;
+                background: #6B0000;
+                font-style: normal ;                
+}
+#aboutnyanavsementara{
+                padding: 5px;
+                margin: 5px;
+                color: white;
+                background: maroon;
+                font-style: italic ;
+                font-weight: lighter;
+                font-size: 22px;
+}
+#listnavsementara td a:hover{ 
+                color: red;
+                background: maroon;
+                font-style: normal ;
+                font-weight: lighter;
+                font-size: 22px;
+}
+      #muharatellnote{ 
+            padding: 12px ;
+            margin-top: 1px ;
+            font-family: serif; 
+            font-size: 9px;  
+            color: white;
+            font-weight: lighter;            
+            background: #6B0000;
+ }
+
+
+</style>
+<body>
+
+    <div style="padding: 12px;color: white; background: #6B0000;font-style: italic ;font-weight: lighter;font-size: 18px;">
+         <span style="position: fixed; right: 25px;  top: 10px;" id="rainDropContainer"></span>IRIZuina Family<script type="text/javascript" src="javascript/rainDrop.js"></script>
+    </div>
+<script type="text/javascript">
+	var e = document.getElementById('rainDropContainer');
+	var r = rainDrop({total:3, time: 1000, color:[], type:'wave', direction: 'alternate-reverse'});
+	e.appendChild(r);
+</script>
+
+
+
+<div class="w3-content w3-display-container" align="center">
+  <img class="mySlides" src="https://raw.githubusercontent.com/muharaasa/gudang/master/image/candlefire.gif" >
+  <img class="mySlides" src="https://raw.githubusercontent.com/muharaasa/gudang/master/image/firerose.gif" >
+  <img class="mySlides" src="https://raw.githubusercontent.com/muharaasa/gudang/master/background/dark-red_gradation-long.jpg" >
+  <img class="mySlides" src="https://raw.githubusercontent.com/muharaasa/gudang/master/image/fadewhiterose.gif" >
+
+  <button class="w3-button w3-black w3-display-left" onclick="plusDivs(-1)">&#10094;</button>
+  <button class="w3-button w3-black w3-display-right" onclick="plusDivs(1)">&#10095;</button>
+</div>
+
+
+
+    <table id="navsementara">
+<tr id="hereweare">
+   <td>Home</td>
+</tr>
+    </table><table id="navsementara">
+<tr id="listnavsementara">
+   <td><a href="community.html">Community</a></td>
+   <td><a href="tools.html">Tools</a></td>
+   <td><a href="news.html">News</a></td>
+   <td><a href="library.html">Library</a></td>
+   <td><a href="shop.html">Shop</a></td>
+   <td><a href="appstore.html">App store</a></td>
+</tr>
+    </table><table id="navsementara">
+<tr>
+   <td> </td>
+   <td> </td>
+   <td> </td>
+   <td> </td>
+   <td> </td>
+   <td id="aboutnyanavsementara" align="right" width="100px"><a href="aboutus.html"> </a> About us</td>
+</tr>
+    </table>
+
+
+
+
+
+
+<div id="transpar1">
+
+   <p>
+     <b>1</b>
+        <ul>
+              <u><b>IRIZuina Community </b></u>
+              <br> Komunitas dan tempat inovasi bermanfaat bagi bersama.
+              merupakan tempat berdiskusi dan bekerja sama dalam mengelola sumber daya,
+              menyelesaikan permasalahan dan membantu secara moril, jasa maupun materiil satu sama lain. 
+        </ul>
+   </p>
+</div><div id="transpar1">
+   <p>
+     <b>2</b>
+        <ul>
+              <u><b>TRIZe</b></u>
+              <br>Beberapa Online tools untuk memudahkan pekerjaan anda meliputi Sourcecode, Pentesting Tools, File Editing, Hash and Crypt, ASysStruck , Management Data, Scientific Calculation dan lain-lain. 
+        </ul>
+   </p>
+</div><div id="transpar1">
+   <p>
+     <b>3</b>
+        <ul>
+              <u><b>IRIZuina News</b></u>
+              <br>Ketahui kabar terkini mengenai peristiwa di Dunia Bisnis, Edukasi, Perpolitikan, Edukasi, Militer,  Sains,  Astronomi,  cyberspace dan lain-lain secara Aktual ,Analitis dan terpercaya. 
+        </ul>
+   </p>
+</div><div id="transpar1">
+   <p>
+     <b>4</b>
+        <ul>
+              <u><b>Rize Library</b></u>
+              <br>Eksplorasi Dunia dan Tingkatkan Mutu diri dalam Pengetahuan dan Keterampilan !
+              <br> Temukan , Baca , Download, Referensi Sains,  IT dan lain-lain bebas dan gratis
+               dalam berbagai bentuk (File, Course, etc). 
+        </ul>
+   </p>
+</div><div id="transpar1">
+   <p>
+     <b>5</b>
+        <ul>
+              <u><b>IRIZShop</b></u>
+              <br>Dapatkan pilihan menarik dan promo menarik untuk berbagai produk-produk pilihan!
+              <br>tersedia fitur reseller , hire jasa , investasi, lowongan kerja dan statistik Supply-demand serta fitur lainnya untuk memenuhi bisnis dan kebutuhan
+        </ul>
+   </p>
+</div><div id="transpar1">
+   <p>
+     <b>6</b>
+        <ul>
+              <u><b>IRIZuinapp Store</u></b>
+              <br>menyediakan flatform, aplikasi, media, komponen dan script yang dapat digunakan
+              untuk optimalisasi kerja maupun sarana hiburan dan pembelajaran. 
+        </ul>
+   </p>
+</div><div id="transpar1">
+   <p>
+     <b>7</b>
+        <ul>
+              <u><b><a style="color: red;" href="plus.html"><i>IRIZuina</b></u> <sup>plus+</sup></i></a>
+              <br> Berusaha untuk memperbaiki kekurangan/kesalahan di kehidupan sosial,IPTek,Ekonomi maupun Budaya pada Masyarakat. 
+        </ul>
+   </p>
+
+</div>
+
+
+
+
+
+
+<div id="muharatellnote">
+<table><tr><td><img style=" border-radius : 50%;" src="https://github.com/muharaasa/gudang/blob/master/image/iriz-sas_logo.png" width="50"></td><td>Muharaasa
+
+<small><br>"  I'm not at liberty to divulge all the details, but what I can say is I have been working on something to revolutionize this world."</small><br></span>
+</td></tr></table>   </div> 
+
+
+<script>
+var slideIndex = 1;
+showDivs(slideIndex);
+
+function plusDivs(n) {
+  showDivs(slideIndex += n);
+}
+
+function showDivs(n) {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  if (n > x.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = x.length}
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";  
+  }
+  x[slideIndex-1].style.display = "block";  
+}
+</script>
+
+<script src="javascript/no.back.js"></script>
+</body></html>
+
