@@ -15,7 +15,8 @@
 <br><i style="color: white; border-radius:50%; padding : 10px;">i :
 <script>
 		$.getJSON('https://json.geoiplookup.io/?callback=?', function(data) {
-  writeln(JSON.stringify(data, null, 2));
+  let your_ip4data = (JSON.stringify(data, null, 2));
+			document.getElementById("your_ip4data").innerHTML = your_ip4data;
 });
 </script>
 </i>
@@ -40,7 +41,7 @@ document.writeln("<br/>navigator.userLanguage: "+pembukaa+navigator.userLanguage
 taintEnabled()
 javaEnabled()
 </script>
-
+<div style='background: white; color: black; margin: 20px; padding: 10px' id='your_ip4data'></div>
 </font> </td></tr></table> <script> 
 var pembukaa = "<font color='red'>"
 var tutup = "</font>"
