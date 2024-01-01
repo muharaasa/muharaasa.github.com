@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Text script drafting</title>
+</head>
+<style>
+	div{background: #4B1414; margin: 10px; padding: 10px;}
+	.standard_textarea{min-width: 100%; max-width: 100%; min-height: 180px}
+	.coding_textarea{min-width: 100%; max-width: 100%; min-height: 280px; color: red; font-family: serif; background: rgba(0,0,0,0.8);}
+	.sourcing{margin: 10px; padding: 10px; background:#4b1414; color: cyan;}
+	.paper{padding-top: 40px; padding-bottom: 40px; margin-top: 40px; margin-bottom: 40px; background: rgba(100,10,10,0.5); color: cyan;}
+	#searchinput{padding:5px; margin:10px; border: red; color: maroon; font-family: serif;}
+</style>
+<body style="background: rgb(0,0,0)">
+		<textarea id="text" class="standard_textarea"> 
+			Welcome to this page, to use this, paste the text you want to be voiced and choose which version of the way this has to be spoken by click the button below 
+			
+			suggested :
+				/**< uuuu yang kemaren kehapusss ></uuuu>*/
+			*> codeflow 
+				side by side suggestion scroll : TEXTAREA & copypastedictionary suggestion 
+					bottom _> 
+						find & replace
+						save by localStorage
+						save to download file
+						load from text (! if invalid _> go errorings)
+						share 
+				^ Account synch
+				^ mindmapping project {total command}
+				^ styled colorify
+			*> textHex
+				edit text inside textarea
+					similiar unicode character to font dictionary 
+						^ customable dictionary
+					all AAA / aaa / Aa / aA / 
+			
+		</textarea>
+		<input onclick='responsiveVoice.speak(document.getElementById("text").value, "Indonesian Female");' type='button' value='► Indonesian Female voice' />
+		<input onclick='responsiveVoice.speak(document.getElementById("text").value, "Australian Female");' type='button' value='► Australian Female voice' />
+		<input onclick='responsiveVoice.cancel();' type='button' value='■ cancelّ' />
+	</div>
+	<br>
+	<div class="sourcing">source : <a href="https://responsivevoice.org"><font color="red">ResponsiveVoice-NonCommercial</font></a></div>
+	<script src="https://code.responsivevoice.org/responsivevoice.js?key=luuN5m2s"></script>
+
+
+
+	<script type="text/javascript">
+	let suggestedcode = [
+		[["Paragraph"],["auto paragraph"],[' \n 	 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum']],
+		[["Copy dialogue"],[" hallo "],[' \n	 dialogue_here : " hey_is_it_your_sentence? "  ']],
+		[["Indent clipboard"],[" just Tab  "],[' 			 ']],
+		[["JS forEach"],[" to do things for each array"],['\n\nyourvariable.forEach(function(each_things_to_listed){ \n	  let myli = document.createElement(`li`); \n 	 myli.innerHTML = each_things_to_listed; \n	  yourtargetplace.appendChild(myli); \n });']],
+	];
+	var textareacode = document.getElementById("textareacode");
+	
+	function provide_suggesting(e){
+		let textareacode = document.getElementById("textareacode");
+		textareacode.value += suggestedcode[e][2]; /// ! damn, malah ga sesuai letak kursor, tapi gapapalah nanti aja #fixlater
+		return
+	}
+	
+	
+  function searching_suggest(){
+  	suggestcontrol.innerHTML = "";
+  	suggestedcode.forEach(function(e){ 
+	let i = suggestedcode.indexOf(e);
+	
+	let myli = document.createElement(`li`);
+	let eachsuggestioncode = e[0]+' <br><sub>for : <i>'+e[1]+'</i></sub><br><button onclick="provide_suggesting('+[i]+')">copy?</button>';
+  	
+	myli.innerHTML = eachsuggestioncode; 
+ 	suggestcontrol.appendChild(myli);
+	////// whaahahahha akhirnyaa
+ 	});
+ }
+
+
+
+	</script>
+	<table style="background: rgba(180,40,40, 0.7); color: cyan;min-width: 98%; max-width: 100%; margin: 10px; padding: 20px">
+	<tr>
+		<td style="width:70%">
+			<textarea class="coding_textarea" id="textareacode"> please enter your code here</textarea>
+		</td>
+		<td style="width: 30%">
+		<div style="padding: 20px; overflow-y: scroll; height: 200px; width: 90%"'>
+			<center><input type='text' id='searchinput' value="search the thing"><button onclick="searching_suggest()">| search |</button><br>here's suggestion for you: </center>
+			<ol id="suggestcontrol"></ol>
+		</div>
+		</td></tr>
+	</table>
+
+
+
+
+<center>
+<div style="paper">
+	<u><i>title : Novice of sage</i></u>
+	<p>"<span id='hernote'></span>"</p>
+	<p>"<span id='illchoose'></span>"</p>
+</div>
+</center>
+
+
+
+
+<script type="text/javascript">
+// unk. for ciwl logicalic, sekalian paterning gaaranatical AI
+
+let hernote = document.getElementById('hernote');
+let illchoose = document.getElementById('illchoose');
+moduleA1();
+
+	function moduleA1(){
+						//set Ingatan..........NO? go below
+		hernote.innerHTML = "welcome back, nice to see you again"+"\n is there anything i can help?";
+		submoduleA1_A1();
+	}
+		function submoduleA1_A1(){
+			// no rekomendasi help ? 
+						// ceritanya datanya sudah ada
+						let notepost = "<br>Youtube contenting,<sub> asal matter / review </sub><br>spesifically posting about materi";
+			illchoose.innerHTML = "sorry bt there's nothing i can do now...."+"\n but atleast theres something i can recomend you from @notefromthepast:"+notepost; 
+		}
+
+
+
+
+/// main quest dokumen ini : 
+	/**
+	
+	easycodeflow seperti tertera di text area atas
+	
+	**/
+</script>
+
+
+
+
+</body>
+</html>
