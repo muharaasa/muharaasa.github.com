@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -63,15 +64,78 @@
 </head>
 <body onload="checkFileAPI();">
     <div id="container">    
-        <input type="file" onchange='readText(this)' />
-        <br/>
-        <hr/>   
-        <h3>Contents of the Text file:</h3>
-        <div id="main">
-            ...
-        </div>
-    </div>
+        <input type="file" onchange='readText(this)' /><br/>
+		<hr/><h3>Contents of the Text file:</h3>
+		<textarea style="height: 350px; margin: 20px; padding: 20px; color: lime; background: rgba(0,0,0,0.9);width: 80%" id="main">...</textarea>
+		
+		<!--- this section is for download the textarea---->
+		  <br><hr><br><center>
+		  <button onclick="download_asText()">Download Text</button> or 
+		  <button onclick="download_asJPG()">Download JPG</button><sub>(< - not yet working ) </sub>
+		  </center>
+		    <script>
+    function download_asText() {
+      // Get the text from the textarea
+      let text = document.getElementById("main").value;
 
+      // Create a Blob containing the text
+      let blob = new Blob([text], { type: "text/plain" });
+
+      // Create a link element
+      let a = document.createElement("a");
+
+      // Set the download attribute with a filename
+      a.download = "downloaded_text.txt";
+
+      // Create a URL for the Blob and set it as the href attribute of the link
+      a.href = window.URL.createObjectURL(blob);
+
+      // Append the link to the body
+      document.body.appendChild(a);
+
+      // Trigger a click on the link to start the download
+      a.click();
+
+      // Remove the link from the DOM
+      document.body.removeChild(a);
+    }
+	
+	
+	    function download_asJPG() { /// same as above, just the file is .jpg
+      let text = document.getElementById("main").value;
+      let blob = new Blob([text], { type: "text/plain" });
+      let a = document.createElement("a");
+      a.download = "your_image.jpg";
+      a.href = window.URL.createObjectURL(blob);
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  </script>
+    </div>
+<!--- this section is for reading as jpg---->
+<center> <hr> as viewing image: <br><br>
+<link class="jsbin" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
+<script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
+	<input type='file' onchange="readURL(this);" /><br><br>
+	<center style="height: 400px; width: 90%; overflow: scroll; margin: 20px; padding: 20px; background: url('https://e1.pxfuel.com/desktop-wallpaper/476/85/desktop-wallpaper-genshin-impact-sunset-genshin-impact-landscape.jpg')">
+    <img id="blah" src="https://vignette.wikia.nocookie.net/undertale/images/9/92/Giphy.gif/revision/latest?cb=20160614134158&path-prefix=pl" alt="here your image" /></center>
+</center>
+<script>
+function readURL(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      $('#blah')
+        .attr('src', e.target.result)
+        .width(full)
+        .height(auto);
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+</script>
 
 </body>
 </html>
