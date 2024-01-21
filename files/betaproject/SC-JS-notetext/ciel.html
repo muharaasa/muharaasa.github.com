@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,6 +13,9 @@
 	#searchinput{padding:5px; margin:10px; border: red; color: maroon; font-family: serif;}
 </style>
 <body style="background: rgb(0,0,0)">
+
+
+<!--- 1. this section is for text-to-speech usage---->
 		<textarea id="text" class="standard_textarea"> 
 			Welcome to this page, to use this, paste the text you want to be voiced and choose which version of the way this has to be spoken by click the button below 
 			
@@ -39,13 +43,26 @@
 		<input onclick='responsiveVoice.speak(document.getElementById("text").value, "Australian Female");' type='button' value='► Australian Female voice' />
 		<input onclick='responsiveVoice.cancel();' type='button' value='■ cancelّ' />
 	</div>
-	<br>
+<br>
 	<div class="sourcing">source : <a href="https://responsivevoice.org"><font color="red">ResponsiveVoice-NonCommercial</font></a></div>
 	<script src="https://code.responsivevoice.org/responsivevoice.js?key=luuN5m2s"></script>
 
 
-
+<!--- 2.a this section is for textarea edit & suggest---->
+	<table style="background: rgba(180,40,40, 0.7); color: cyan;min-width: 98%; max-width: 100%; margin: 10px; padding: 20px">
+	<tr>
+		<td style="width:70%">
+			<textarea class="coding_textarea" id="textareacode"> please enter your code here</textarea>
+		</td>
+		<td style="width: 30%">
+		<div style="padding: 20px; overflow-y: scroll; height: 200px; width: 90%"'>
+			<center><input type='text' id='searchinput' value="search the thing"><button onclick="searching_suggest()">| search |</button><br>here's suggestion for you: </center>
+			<ol id="suggestcontrol"></ol>
+		</div>
+		</td></tr>
+	</table>
 	<script type="text/javascript">
+	///goodluck manualy input your own suggestion ^-^
 	let suggestedcode = [
 		[["Paragraph"],["auto paragraph"],[' \n 	 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum']],
 		[["Copy dialogue"],[" hallo "],[' \n	 dialogue_here : " hey_is_it_your_sentence? "  ']],
@@ -60,7 +77,6 @@
 		return
 	}
 	
-	
   function searching_suggest(){
   	suggestcontrol.innerHTML = "";
   	suggestedcode.forEach(function(e){ 
@@ -74,26 +90,83 @@
 	////// whaahahahha akhirnyaa
  	});
  }
-
-
-
 	</script>
-	<table style="background: rgba(180,40,40, 0.7); color: cyan;min-width: 98%; max-width: 100%; margin: 10px; padding: 20px">
-	<tr>
-		<td style="width:70%">
-			<textarea class="coding_textarea" id="textareacode"> please enter your code here</textarea>
-		</td>
-		<td style="width: 30%">
-		<div style="padding: 20px; overflow-y: scroll; height: 200px; width: 90%"'>
-			<center><input type='text' id='searchinput' value="search the thing"><button onclick="searching_suggest()">| search |</button><br>here's suggestion for you: </center>
-			<ol id="suggestcontrol"></ol>
-		</div>
-		</td></tr>
-	</table>
+<!--- 2.b this section is for download the textarea ---->
+		  <br><hr><br>
+		  <center>
+		  <button onclick="download_asText()">Download Text</button> or 
+		  </center>
+<script>
+    function download_asText() {
+      // Get the text from the textarea
+      let text = document.getElementById("textareacode").value;
+      let blob = new Blob([text], { type: "text/plain" });
+      let a = document.createElement("a");
+      a.download = "your_downloaded_text.txt";
+      a.href = window.URL.createObjectURL(blob);
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+    }
+</script>
+
+<!--- 3 iframing website, youtube / etc  --->
+<center>
+	<details><summary> open iframe</summary>
+	<p style="width: 100%; color: white; background: rgba(100,0,0,0.5)">
+  	suggestionLinks>
+	<button onclick="urlGO_iframe1('https://www.dcode.fr/')">dcode.fr</button>
+    <button onclick="urlGO_iframe1('https://www.summarize.tech/')">Youtube Sumarizer</button>
+    <button onclick="urlGO_iframe1('https://vocalremover.org/')">audio vocalRemover AI</button>
+    <button onclick="urlGO_iframe1('https://www.symbolab.com/solver/functions-line-calculator')"> Symolab<sub>functions-line-calculator</sub></button>
+    <button onclick="urlGO_iframe1('https://muharaasa.github.io/files/index.html')">another <i>muharaasa.github.io</i> tools</button>
+	 or input here: <input id="urlFOR_doc_iframe1" type="text" /><button onclick="iframe1changedURL()">get through it</button>
+	</p>
+    <div id="doc_iframe1">
+        <iframe width="90%" height="350" src="https://muharaasa.github.io/files/index.html"></iframe>
+    </div>
+	<details><summary>Another iframe</summary>
+    	<p style=" color: white; background: rgba(100,0,0,0.5)">input here: <input id="urlFOR_doc_iframe2" type="text" /><button onclick="iframe2changedURL()">get through it</button></p>
+    	<div id="doc_iframe2"><iframe width="90%" height="350" src="https://www.youtube.com/embed/tgbNymZ7vqY"></iframe></div>
+	</details>
+	
+	</details>
+</center>
+
+<style>
+details > summary {  padding: 4px;  width: 200px;  background-color: #eeeeee;  border: none;  box-shadow: 1px 1px 2px #bbbbbb;  cursor: pointer;}
+details > p {  background-color: #eeeeee;  padding: 4px;  margin: 0;  box-shadow: 1px 1px 2px #bbbbbb;}
+</style>
+
+<script type="text/javascript">
+    function iframe1changedURL() {
+        let urlFOR_doc_iframe1 = document.getElementById("urlFOR_doc_iframe1").value;
+        console.log(urlFOR_doc_iframe1 + " is urlFOR_doc_iframe1.value");
+        // Check if the URL contains "https://www.youtube.com/watch?v="
+        if (urlFOR_doc_iframe1.includes("https://www.youtube.com/watch?v=")) {
+            // Replace with "https://www.youtube.com/embed/"
+            urlFOR_doc_iframe1 = urlFOR_doc_iframe1.replace("https://www.youtube.com/watch?v=", "https://www.youtube.com/embed/");
+        }
+        let targetFOR_doc_iframe1 = document.getElementById("doc_iframe1");
+        console.log(targetFOR_doc_iframe1 + " is (targetFOR_)doc_iframe1");
+        targetFOR_doc_iframe1.innerHTML = "<iframe width='90%' height='350' src='" + urlFOR_doc_iframe1 + "'></iframe>";
+    }
+	/// just copyed from above, yes i dont mind
+    function iframe2changedURL() {
+        let urlFOR_doc_iframe2 = document.getElementById("urlFOR_doc_iframe2").value;
+        if (urlFOR_doc_iframe2.includes("https://www.youtube.com/watch?v=")) {
+            urlFOR_doc_iframe2 = urlFOR_doc_iframe2.replace("https://www.youtube.com/watch?v=", "https://www.youtube.com/embed/");
+        }
+        let targetFOR_doc_iframe2 = document.getElementById("doc_iframe2");
+        targetFOR_doc_iframe2.innerHTML = "<iframe width='90%' height='350' src='"+urlFOR_doc_iframe2+"'></iframe>";
+    }
+	/// suggestion bookmark
+	function urlGO_iframe1(url){
+        document.getElementById("urlFOR_doc_iframe1").value = url; iframe1changedURL();
+	}
+</script>
 
 
-
-
+<!---- END this section for advanced sub-General synthetical Intellegent Development ---->
 <center>
 <div style="paper">
 	<u><i>title : Novice of sage</i></u>
@@ -101,10 +174,7 @@
 	<p>"<span id='illchoose'></span>"</p>
 </div>
 </center>
-
-
-
-
+		
 <script type="text/javascript">
 // unk. for ciwl logicalic, sekalian paterning gaaranatical AI
 
@@ -124,14 +194,13 @@ moduleA1();
 			illchoose.innerHTML = "sorry bt there's nothing i can do now...."+"\n but atleast theres something i can recomend you from @notefromthepast:"+notepost; 
 		}
 
-
-
-
 /// main quest dokumen ini : 
 	/**
-	
+
+	export as(pdf?)/share it(email?)/ saving online ( account dulu)
 	easycodeflow seperti tertera di text area atas
-	
+
+ 	
 	**/
 </script>
 
