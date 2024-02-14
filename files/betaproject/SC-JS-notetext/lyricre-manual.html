@@ -20,6 +20,9 @@
     <br>
     <button onclick="copySingleLine()">Copy Single Line</button>
     <button onclick="undoLastLine()">Undo</button>
+    <button onclick="clearRawnote()">Clear raw note</button>
+    <button onclick="clearAllresult()">Clear All Result</button>
+	<input type="file" onchange='readText(this)' />
     <br>
     <button onclick="addWaitNone()">add "[...]"</button>
     <br>
@@ -62,24 +65,25 @@
             if (currentIndex > 0) {
                 // Split textarea2 content into lines
                 var lines = textarea2.value.split('\n');
-
                 // Remove the last line
                 lines.pop();
-
                 // Update textarea2 value
                 textarea2.value = lines.join('\n');
-
                 // Decrement the current index
                 currentIndex--;
-
                 // Update the data attribute
                 currentTimeElement.dataset.currentIndex = currentIndex;
-
                 // Display current index
                 currentIndexElement.textContent = 'Index: ' + currentIndex;
             }
         }
 
+
+		// buton clearing textarea 1 & 2
+		function clearRawnote(){document.getElementById("textarea1").innerText = "";}
+		function clearAllresult(){document.getElementById("textarea2").innerText = "";}
+
+		//for audio file input
         document.getElementById("audioFile").addEventListener("change", function () {
             var audioPlayer = document.getElementById("audioPlayer");
             var audioFile = this.files[0];
@@ -119,9 +123,99 @@
             currentIndexElement.textContent = 'Index: 0'; // Set initial index text
         }
 	function addWaitNone(){
-		 textarea2.value += '\n ...'
+		 var currentTime = document.getElementById("currentTime").innerText;
+		 textarea2.value += '\n ['+currentTime+'] ...'
 	}
-    </script>
+	
+	
+	
+	    // Function to always scroll to the bottom of the textarea
+    function scrollToBottom() {
+      var textarea2 = document.getElementById('textarea2');
+      textarea2.scrollTop = textarea2.scrollHeight;
+    }
 
+    // Set initial scroll to bottom & for when the content changes
+    scrollToBottom();
+    document.getElementById('textarea2').addEventListener('input', scrollToBottom);
+
+    // Function to scroll to the bottom every 0.3second ( please clear if reduced ux)
+    setInterval(scrollToBottom, 300);
+	
+    </script>
+<script type="text/javascript">
+    var reader; //GLOBAL File Reader object for demo purpose only
+
+    /**
+     * Check for the various File API support.
+     */
+    function checkFileAPI() {
+        if (window.File && window.FileReader && window.FileList && window.Blob) {
+            reader = new FileReader();
+            return true; 
+        } else {
+            alert('The File APIs are not fully supported by your browser. Fallback required.');
+            return false;
+        }
+    }
+
+    /**
+     * read text input
+     */
+    function readText(filePath) {
+        var output = ""; //placeholder for text output
+        if(filePath.files && filePath.files[0]) {           
+            reader.onload = function (e) {
+                output = e.target.result;
+                displayContents(output);
+            };//end onload()
+            reader.readAsText(filePath.files[0]);
+        }//end if html5 filelist support
+        else if(ActiveXObject && filePath) { //fallback to IE 6-8 support via ActiveX
+            try {
+                reader = new ActiveXObject("Scripting.FileSystemObject");
+                var file = reader.OpenTextFile(filePath, 1); //ActiveX File Object
+                output = file.ReadAll(); //text contents of file
+                file.Close(); //close file "input stream"
+                displayContents(output);
+            } catch (e) {
+                if (e.number == -2146827859) {
+                    alert('Unable to access local files due to browser security settings. ' + 
+                     'To overcome this, go to Tools->Internet Options->Security->Custom Level. ' + 
+                     'Find the setting for "Initialize and script ActiveX controls not marked as safe" and change it to "Enable" or "Prompt"'); 
+                }
+            }       
+        }
+        else { //this is where you could fallback to Java Applet, Flash or similar
+            return false;
+        }       
+        return true;
+    }   
+
+    /**
+     * display content using a basic HTML replacement
+     */
+    function displayContents(txt) {
+        var el = document.getElementById('textarea1'); 
+        el.innerHTML = txt; //display output in DOM
+    }   
+</script>
+<script type="text/javascript">
+checkFileAPI();
+</script>
+<script>
+function readURL(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      $('#blah')
+        .attr('src', e.target.result)
+        .width(full)
+        .height(auto);
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+</script>
 </body>
 </html>
