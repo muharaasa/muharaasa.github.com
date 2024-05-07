@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,10 +22,12 @@
     <button onclick="copySingleLine()">Copy Single Line</button>
     <button onclick="undoLastLine()">Undo</button>
     <button onclick="clearRawnote()">Clear raw note</button>
-    <button onclick="clearAllresult()">Clear All Result</button>
-	<input type="file" onchange='readText(this)' />
+    <button onclick="clearAllresult()">Clear All Result</button><hr>
+
+	<input type="file" onchange='readText(this);' />
     <br>
     <button onclick="addWaitNone()">add "[...]"</button>
+    <button onclick="downloadresult()">download the result</button>
     <br>
 
     <textarea id="textarea2" rows="10" cols="50" readonly></textarea>
@@ -34,6 +37,8 @@
     <div id="currentIndex"></div> <!-- New div for displaying current index -->
 
     <script>
+
+
         var timeInterval;
 
         function copySingleLine() {
@@ -79,12 +84,13 @@
         }
 
 
-		// buton clearing textarea 1 & 2
-		function clearRawnote(){document.getElementById("textarea1").innerText = "";}
-		function clearAllresult(){document.getElementById("textarea2").innerText = "";}
+		// button clearing textarea 1 & 2
+		function clearRawnote(){document.getElementById("textarea1").innerText = ""; document.getElementById("textarea1").value = "";}
+		function clearAllresult(){document.getElementById("textarea2").innerText = ""; document.getElementById("textarea2").value = "";}
 
 		//for audio file input
-        document.getElementById("audioFile").addEventListener("change", function () {
+        document.getElementById("audioFile").addEventListener("change",
+		 function () {
             var audioPlayer = document.getElementById("audioPlayer");
             var audioFile = this.files[0];
 
@@ -127,7 +133,26 @@
 		 textarea2.value += '\n ['+currentTime+'] ...'
 	}
 	
-	
+	function downloadresult() {
+		const textareaValue = document.getElementById('textarea2').value;
+		const blob = new Blob([textareaValue], { type: 'text/plain' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		const fileInput = document.getElementById('audioFile'); // name is the audio selected
+		
+				const file = fileInput.files[0]; console.log(file);
+				if(file === undefined){ rawfilename = 'customized'}
+				else{ rawfilename = file.name; }
+
+		function removeExtension(filename) {return filename.replace(/\.[^/.]+$/, "");} /// just to delete any extension 
+			filename = removeExtension(rawfilename);
+
+		a.href = url; a.download = filename+'.lrc';
+		document.body.appendChild(a); 
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+	}
 	
 	    // Function to always scroll to the bottom of the textarea
     function scrollToBottom() {
@@ -198,24 +223,53 @@
     function displayContents(txt) {
         var el = document.getElementById('textarea1'); 
         el.innerHTML = txt; //display output in DOM
+        el.value = txt; //display output in textarea and its value
     }   
+	
+	checkFileAPI();
 </script>
-<script type="text/javascript">
-checkFileAPI();
-</script>
+<textarea id="kotretan"></textarea>
+<button onclick="starterflow()">Ok party</button>
 <script>
-function readURL(input) {
-  if (input.files && input.files[0]) {
-    var reader = new FileReader();
-    reader.onload = function (e) {
-      $('#blah')
-        .attr('src', e.target.result)
-        .width(full)
-        .height(auto);
-    };
-    reader.readAsDataURL(input.files[0]);
-  }
+function starterflow(){
+	createArrofArr();
+	let itstart = setInterval(followtheFlow, 1000);
+	followtheFlow();
+	}
+
+function createArrofArr(){
+	const lyrics = document.getElementById('textarea1').value;
+	// Split the lyrics by new lines
+	const lines = lyrics.trim().split('\n');
+	// Map each line to an array containing the timestamp and the lyrics
+	const result = lines.map(line => { 
+		//filter timestampt miisecond 
+		let input = line;
+		let filteredline = input.replace(/\.\d+\]/, "]");
+		line = filteredline;
+
+
+		const [timestamp, ...lyricParts] = line.trim().split(' ');
+		const lyric = lyricParts.join(' ');
+		return [timestamp.replace('[', '').replace(']', ''), lyric];
+	});
+	document.getElementById('kotretan').value = JSON.stringify(result);
+}
+function followtheFlow(){
+	let timed = document.getElementById('currentTime').innerText; 
+	let arrayforsearch = JSON.parse(document.getElementById('kotretan').value);
+	
+	function findValue(timed, arrayforsearch) {
+		for (let i = 0; i < arrayforsearch.length; i++) { if(arrayforsearch[i][0] === timed) { return arrayforsearch[i][1];}} 
+		return null; // Return null if no match is found
+	}
+
+	let result = findValue(timed, arrayforsearch);
+	if (result !== null) { console.log(result);} if (result === null) {} else {} //  else { }  enter here if not found
+	
+
 }
 </script>
+
 </body>
 </html>
