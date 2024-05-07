@@ -27,12 +27,13 @@
 	<input type="file" onchange='readText(this);' />
     <br>
     <button onclick="addWaitNone()">add "[...]"</button>
-    <button onclick="downloadresult()">download the result</button>
     <br>
 
     <textarea id="textarea2" rows="10" cols="50" readonly></textarea>
     <br>
-
+	<button onclick="downloadresult()">download the result</button>
+	<br>
+	
     <div id="currentTime"></div>
     <div id="currentIndex"></div> <!-- New div for displaying current index -->
 
@@ -234,7 +235,6 @@
 function starterflow(){
 	createArrofArr();
 	let itstart = setInterval(followtheFlow, 1000);
-	followtheFlow();
 	}
 
 function createArrofArr(){
@@ -247,7 +247,6 @@ function createArrofArr(){
 		let input = line;
 		let filteredline = input.replace(/\.\d+\]/, "]");
 		line = filteredline;
-
 
 		const [timestamp, ...lyricParts] = line.trim().split(' ');
 		const lyric = lyricParts.join(' ');
@@ -270,6 +269,19 @@ function followtheFlow(){
 
 }
 </script>
+<!----
+	LATER
+	//remake frontEnd layout
+	//additional : the lyric reader auto synch in while music play
+		while playing, if not there are written lyric: [blank] 
+			or if button then massage : (' please input the timestamped lyric ')
+		while playing, if its included lyric but not timed lyric massages: (' current text doesnt have time wroten in lyric ')
+			or same in buton click
+		if not any playing music of course it hasnt triggered |
+			or in button click: massagge apear ('please input the music')
+	//additional : hiding the animation mechanism (edit tit with timed (00:10 => 00:10+3 sec is it still?)
+	//additional : spectrum
 
+---->
 </body>
 </html>
