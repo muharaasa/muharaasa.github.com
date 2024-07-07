@@ -1,145 +1,257 @@
-
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 	body{ color: white; background: black; }
-	#activeToday{height: 50%; padding: 10px; color: maroon; 
+	
+	#activeToday{
+		list-style-image: url("file:///C:/Users/muham/Downloads/output-onlinepngtools.png");
+		height: 50%; overflow-y: scroll;
+		padding: 10px; color : black; 
 		background-repeat: no-repeat;background-size: 100%;
-		background-color: black; background-color: white;}
-	#nearFuture{padding: 10px; color: cyan; 
+		background-color: black; background-color: gray;}
+		#activeToday li{
+			margin-top: 5px; margin-bottom: 5px; margin-left: 20px; 
+			padding: 5px; padding-left: 10px;
+			list-style-type: lower-roman;
+			border: 0px solid blue;
+			border-left : 1px solid red;
+			background: rgba(0,0,0,0.5); color: white;
+			}
+			#activeToday li:hover{ margin: 15px; background: white; color: maroon; }
+			#activeToday li button{ 
+				background: rgb(0,0,0);  color : cyan; 
+				border : 1px solid cyan;
+				border-radius:10px;
+				margin-top: 5px;
+ 				padding: 5px; padding-left: 20px; padding-right: 20px;}
+			#activeToday li button:hover{ 
+				background: rgb(40,40,40);  color : red; 
+				border : 1px solid red;
+				border-radius:10px;}
+
+
+.bubble {
+    max-width: 60%;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border-radius: 10px;
+    position: relative;
+    display: inline-block;
+    color: #fff;
+    background-color: #007bff;
+    clear: both;  /* This makes sure each bubble is on a new line */
+}
+
+.bubble.left {
+    background-color: #007bff;
+    float: left;
+    text-align: left;
+}
+
+.bubble.right {
+    background-color: #6c757d;
+    float: right;
+    text-align: right;
+}
+
+.bubble.left::after,
+.bubble.right::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
+}
+
+.bubble.left::after {
+    border-right-color: #007bff;
+    border-left: 0;
+    border-right-width: 10px;
+    top: 10px;
+    left: -10px;
+}
+
+.bubble.right::after {
+    border-left-color: #6c757d;
+    border-right: 0;
+    border-left-width: 10px;
+    top: 10px;
+    right: -10px;
+}
+
+
+
+	#nearFuture{
+		height: 50%; overflow-y: scroll;
+		padding: 10px; color: cyan; 
 		background : url('https://media.giphy.com/media/12AwtlTuPlF29y/giphy.gif');
 		background-repeat: no-repeat;background-size: cover;
 		background-color: black; background-color: yellow;}
-	#farFuture{padding: 10px; color: cyan; 
+	#farFuture{
+		height: 50%; overflow-y: scroll;
+		padding: 10px; color: cyan; 
 		background : url('https://media.giphy.com/media/12AwtlTuPlF29y/giphy.gif');
-		background-repeat: no-repeat;background-size: 100%;
-		background-color: black; background-color: cyam;}
-	#missedOut{ padding: 10px; background: url('https://i.gifer.com/O8gL.gif'); background-repeat: no-repeat;background-size: 100%; background-color: rgba(100,0,0,0.8); color: black; }
-	#Finished{padding: 10px; color: rgb(100,100,200); background: url('https://media1.tenor.com/images/aa2daecdf85cb6c66f7b6509ebf61cef/tenor.gif?itemid=15147452'); }
+		background-repeat: no-repeat; background-size: 100%;
+		background-color: black; }
+	#missedOut{ 
+		height: 50%; overflow-y: scroll;
+		padding: 10px; background: url('https://i.gifer.com/O8gL.gif'); 
+		background-repeat: no-repeat;background-size: 100%; background-color: rgba(100,0,0,0.8); 
+		color: black;}
+	#missedOut li{ 
+		padding: 10px; margin: 10px;
+		background: rgba(0,0,0,0.4); 
+		color: white;}
+				
+	#Finished{
+		height: 50%; overflow-y: scroll;
+		padding: 10px; color: rgb(100,100,200);
+		background: url('https://media1.tenor.com/images/aa2daecdf85cb6c66f7b6509ebf61cef/tenor.gif?itemid=15147452');
+		background-repeat: no-repeat;background-size: 100%; background-color: rgba(100,0,0,0.8); 
+		color: white; }
+	#Finished li{ 
+		padding: 10px; margin: 10px;
+		background: linear-gradient(to bottom right, rgba(10,10,110,0.7),rgba(10,110,110,0.7),rgba(10,110,10,0.7)); 
+		color: white;
+		}
 	#eventList{  display: none}
-        .calendartable{
+	.calendartable{
+			border-collapse: collapse;
 			overflow-wrap: break-word;
-			margin:5px;
-            width: 80%;
-            border-collapse: collapse;
-        }
-        .calendartable th,.calendartable td {
+			margin:5px; width: 80%;
+	}
+	.calendartable th,.calendartable td {
 			overflow-wrap: break-word;
-            border: 1px solid #000;
-            inline-size : 10px;
-			max-width: 120px; /* or whatever width you want. */
-			min-width: 120px; /* or whatever width you want. */
-            height: 75px; 
-            vertical-align: top;
-			background-color: rgba(110,10,0,0.2);
-        }
-        .calendartable th {
-            background-color: rgba(250,200,200,0.2);
-        }
-        .calendartable p {
-            margin: 0;
-        }
-         .highlight-today {
-            color: cyan;
-        }
+			height: 75px; max-width: 120px; min-width: 120px; 
+			border: 1px solid cyan;
+			background-color: rgba(10,110,110,0.7);
+			vertical-align: top; inline-size : 10px;
+			padding: 15px;
+		}
+	.calendartable th { background-color: rgba(250,200,200,0.2); }
+	.calendartable p { margin: 0; }
+	.calendartable li { margin-top: 10px; border: 0px solid white; border-bottom: 1px solid white; }
+	.highlight-today { color: cyan; background: white; }
+	
 	#promisessynchronize{ text-align: center; padding: 10px; margin: 10px; }
+	.whitehighlight{background: white; padding: 5px; margin: 5px; color : black;}
+	.whitehighlight textarea{background: black; padding: 10px; margin: 10px; color : lime; width: 75%; height: 200px;}
+	#dateInput{ padding: 10px; background: white; color: maroon; font-family: serif; }
+	#eventInput{ padding: 10px; background: white; color: maroon; font-family: serif;}
 </style>
-    <style>
+ <style>
 		#routineTable, #routineTable2 {  width: 95%; border-collapse: collapse;}
 		#routineTable th, #routineTable td { text-align: center; padding: 10px; width: 11.28%;}
 		#routineTable2 th, #routineTable2 td { text-align: center; padding: 5px; background: rgba(240,180,120,0.7); width: 100%;}
 		#dailyRoutine, #dailyRoutine2{background: rgba(220,220,220,0.9); padding: 5px; width: 22% }
-        .today {
-            background-color: rgba(220,220,220,0.9);
-            color: black;
-        }
-        .passed {
-            color: maroon;
-        }
-        .current {
-            color: black;
-        }
-        .upcoming {
-            color: navy;
-        }
-		
-    </style>
+		.today { background-color: rgba(220,220,220,0.9); color: black; }
+		.passed { color: maroon; }
+		.current { color: black; }
+		.upcoming { color: navy; }
+	</style>
 	
 	
 <body>
+
+
+
+
 <center>Hope the best<br><img src="https://i.gifer.com/origin/4e/4ef8f07697019676e0da420b78b34065.gif" style="width: 20%"><br>---Greetz---</center>
 
-<center>
-    <table id="routineTable">
-        <thead>
-            <tr>
-                <th>Daily</th>
-                <th>Sunday</th>
-                <th>Monday</th>
-                <th>Tuesday</th>
-                <th>Wednesday</th>
-                <th>Thursday</th>
-                <th>Friday</th>
-                <th>Saturday</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td id="dailyRoutine"></td>
-                <td id="ahad"></td>
-                <td id="senin"></td>
-                <td id="selasa"></td>
-                <td id="rabu"></td>
-                <td id="kamis"></td>
-                <td id="jumat"></td>
-                <td id="sabat"></td>
-            </tr>
-        </tbody>
-    </table>
+<div style="padding: 15px; margin: 20px; background: white; color: navy; ">
+current arc daily theme : 
+<br>wake up, pray
+<br>house chores, re-plan
+<br>play - Learn 
+<br> watching NEWS
+<br>sending 10 CVCL + act on promisses or upto 12 CV CL 
+<br> read
+<br>party*
+<br>retgink again today, re-plan
+<br>Zzzz
+</div>
 
-    <table id="routineTable2">
-        <thead>
-            <tr>
-                <th>Daily</th>
-                <th>Sunday</th>
-                <th>Monday</th>
-                <th>Tuesday</th>
-                <th>Wednesday</th>
-                <th>Thursday</th>
-                <th>Friday</th>
-                <th>Saturday</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td id="dailyRoutine2"></td>
-                <td id="ahad2"></td>
-                <td id="senin2"></td>
-                <td id="selasa2"></td>
-                <td id="rabu2"></td>
-                <td id="kamis2"></td>
-                <td id="jumat2"></td>
-                <td id="sabat2"></td>
-            </tr>
-        </tbody>
-    </table>
+<center>
+	<table id="routineTable">
+		<thead>
+			<tr>
+				<th>Daily</th>
+				<th>Sunday</th>
+				<th>Monday</th>
+				<th>Tuesday</th>
+				<th>Wednesday</th>
+				<th>Thursday</th>
+				<th>Friday</th>
+				<th>Saturday</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td id="dailyRoutine"></td>
+				<td id="ahad"></td>
+				<td id="senin"></td>
+				<td id="selasa"></td>
+				<td id="rabu"></td>
+				<td id="kamis"></td>
+				<td id="jumat"></td>
+				<td id="sabat"></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table id="routineTable2">
+		<thead>
+			<tr>
+				<th>Daily</th>
+				<th>Sunday</th>
+				<th>Monday</th>
+				<th>Tuesday</th>
+				<th>Wednesday</th>
+				<th>Thursday</th>
+				<th>Friday</th>
+				<th>Saturday</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td id="dailyRoutine2"></td>
+				<td id="ahad2"></td>
+				<td id="senin2"></td>
+				<td id="selasa2"></td>
+				<td id="rabu2"></td>
+				<td id="kamis2"></td>
+				<td id="jumat2"></td>
+				<td id="sabat2"></td>
+			</tr>
+		</tbody>
+	</table>
 </center>
 
 <div id='promisessynchronize'>
-	<span style ='background: white; padding: 5px; margin: 5px; color : black;'>Jangan lupa untuk Save setelah memasukan rencana baru</span><br><br>
-  <button id="eventsave">Save & Synch</button>
-  <button id="eventsynch">Synchronize</button>
-  <details><summary>Create a promisee :</summary><form id="eventForm">
-	<label for="dateInput">Date:</label><input type="date" id="dateInput" name="date">
-	<label for="eventInput">Event:</label><input type="text" id="eventInput" name="event">
-    <button type="button" onclick="addEvent()">Add Event</button>
-  </form></details>
-  <center>
-
-        <button onclick="changeMonth(-1)">Previous</button>
-        <span id="current-month-year"></span>
-        <button onclick="changeMonth(1)">Next</button>
+	<div class ='whitehighlight'>Jangan lupa untuk Save setelah memasukan rencana baru<br><br>
+	<details><summary>Create a promisee :</summary>
+	<form id="eventForm">
+		<label for="dateInput">Date:</label><input type="date" id="dateInput" name="date">
+		<label for="eventInput">Event:</label><input type="text" id="eventInput" name="event">
+		<button type="button" onclick="addEvent()">Add Event</button>
+	</form></details>
+	<button id="eventsave">Save & Synch</button>
+	<br><hr><br>
+	</div>
+	<div class ='whitehighlight'>
+		<button id="eventsynch">Synchronize</button> <br>
+		<details><summary> Edit data </summary>
+			<textarea id='src_valx'></textarea><br>
+			<button onclick="overwriteByExternalData()">overwrite "existing local data" from -data above-</button>
+			<button onclick="downloadLocalStorage()">Download existing Local data to file</button>
+		</details>
+	</div>
+	<br><hr><br>
+	<center>
+		<button onclick="changeMonth(-1)">Previous</button>
+		<span id="current-month-year"></span>
+		<button onclick="changeMonth(1)">Next</button>
 		<hr>
-    <table class="calendartable">
+	<table class="calendartable">
 		<th>Sunday</th>
 		<th>Monday</th>
 		<th>Tuesday</th>
@@ -153,8 +265,9 @@
 	</center>
 </div>
 	
-<center><i>activeToday QUEST</i></center><div style="" id="activeToday"></div><hr>
+<center><i>activeToday QUEST</i></center><ol id="activeToday"><li>trying it</li></ol><hr>
 <center><u>Tomorrow or day after it</u></center><div id="nearFuture"></div><hr>
+
 <center><u>Take action -far from DeadLine- </u></center><div id="farFuture"></div><hr>
 <center><i>Missed out!?</i></center><div id="missedOut"></div><hr>
 <center><b>Finished!!!</b></center><div id="Finished"></div><hr>
@@ -163,81 +276,106 @@
 
 <script type='text/javascript'>
 function categorizeAndDisplayfgate_events(fgate_events) {
-    const currentDate = new Date();
+	const currentDate = new Date();
 
-    const missedOut = [];
-    const activeToday = [];
-    const nearFuture = [];
-    const farFuture = [];
-    const finished = [];
+	const missedOut = [];
+	const activeToday = [];
+	const nearFuture = [];
+	const farFuture = [];
+	const finished = [];
 
-    fgate_events.forEach(event => {
-        const eventDate = new Date(event[0]);
-        const timeDifference = eventDate.getTime() - currentDate.getTime();
-        const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
+	fgate_events.forEach(event => {
+		const eventDate = new Date(event[0]);
+		const timeDifference = eventDate.getTime() - currentDate.getTime();
+		const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
 
-         if (event[1].startsWith('Finished : ')) {
-            finished.push(event);
-        } else if (daysDifference < 0) {
-            missedOut.push(event);
-        } else if (daysDifference === 0) {
-            activeToday.push(event);
-        } else if (daysDifference === 1 || daysDifference === 2) {
-            nearFuture.push(event);
-        } else {
-            farFuture.push(event);
-        }
-    });
+		 if (event[1].startsWith('Finished : ')) {
+			finished.push(event);
+		} else if (daysDifference < 0) {
+			missedOut.push(event);
+		} else if (daysDifference === 0) {
+			activeToday.push(event);
+		} else if (daysDifference === 1 || daysDifference === 2) {
+			nearFuture.push(event);
+		} else {
+			farFuture.push(event);
+		}
+	});
 
-    displayfgate_events("missedOut", missedOut);
-    displayfgate_events("activeToday", activeToday);
-    displayfgate_events("nearFuture", nearFuture);
-    displayfgate_events("farFuture", farFuture);
-    displayfgate_events("Finished", finished);
+	displayfgate_events("missedOut", missedOut);
+	displayfgate_events("activeToday", activeToday);
+
+	displayfgate_events_bubble_left("nearFuture", nearFuture);
+	displayfgate_events_bubble_right("farFuture", farFuture);
+	
+	displayfgate_events("Finished", finished);
 }
 
 function displayfgate_events(elementId, fgate_events) {
-    const listElement = document.getElementById(elementId);
-    if (!listElement) {
-        console.error(`Element with ID '${elementId}' not found.`);
-        return;
-    }
-
-    let listItems = fgate_events.map((event, index) => {
-        return `<li>${event[1]} - ${event[0]} <br><button onclick="alertIndex(${index})">test</button> | <button onclick="searchEventDelay('${event[1]}', '${event[0]}')">Delay Please</button> | <button onclick="searchEventFinish('${event[1]}', '${event[0]}')">Finished it</button> | <button onclick="searchEventDelete('${event[1]}', '${event[0]}')">Delete it</button></li>`;
-    }).join('');
-    listElement.innerHTML = `<ul>${listItems}</ul>`;
+	const listElement = document.getElementById(elementId);
+	if (!listElement) { console.error(`Element with ID '${elementId}' not found.`); return; }
+	let listItems = fgate_events.map((event, index) => {
+	return `<li>${event[1]} - ${event[0]} <br><button onclick="alertIndex(${index})">test</button> | <button onclick="searchEventAdvance('${event[1]}', '${event[0]}')">Advance Please</button> | <button onclick="searchEventDelay('${event[1]}', '${event[0]}')">Delay Please</button> | <button onclick="searchEventFinish('${event[1]}', '${event[0]}')">Finished it</button> | <button onclick="searchEventDelete('${event[1]}', '${event[0]}')">Delete it</button></li>`;
+	}).join('');
+	listElement.innerHTML = `<ul>${listItems}</ul>`;
 }
 
+//special case
+function displayfgate_events_bubble_left(elementId, fgate_events) {
+	const listElement = document.getElementById(elementId); // same as displayfgate_events, but its more spesific to display bubles (i dont want to ruin and recode again) 
+	if (!listElement) { console.error(`Element with ID '${elementId}' not found.`); return; }
+	let listItems = fgate_events.map((event, index) => {
+	return `<li class="bubble left">${event[1]} - ${event[0]} <br><button onclick="alertIndex(${index})">test</button> | <button onclick="searchEventAdvance('${event[1]}', '${event[0]}')">Advance Please</button> | <button onclick="searchEventDelay('${event[1]}', '${event[0]}')">Delay Please</button> | <button onclick="searchEventFinish('${event[1]}', '${event[0]}')">Finished it</button> | <button onclick="searchEventDelete('${event[1]}', '${event[0]}')">Delete it</button></li>`;
+	}).join('');
+	listElement.innerHTML = `<ul>${listItems}</ul>`;
+};
+function displayfgate_events_bubble_right(elementId, fgate_events) {
+	const listElement = document.getElementById(elementId); // same as displayfgate_events, but its more spesific to display bubles (i dont want to ruin and recode again) 
+	if (!listElement) { console.error(`Element with ID '${elementId}' not found.`); return; }
+	let listItems = fgate_events.map((event, index) => {
+	return `<li class="bubble right">${event[1]} - ${event[0]} <br><button onclick="alertIndex(${index})">test</button> | <button onclick="searchEventAdvance('${event[1]}', '${event[0]}')">Advance Please</button> | <button onclick="searchEventDelay('${event[1]}', '${event[0]}')">Delay Please</button> | <button onclick="searchEventFinish('${event[1]}', '${event[0]}')">Finished it</button> | <button onclick="searchEventDelete('${event[1]}', '${event[0]}')">Delete it</button></li>`;
+	}).join('');
+	listElement.innerHTML = `<ul>${listItems}</ul>`;
+};
+
 function alertIndex(index) {
-    alert(`Index: ${index}`);
+	alert(`Index: ${index}`); /// just for in development use
 }
 
 function searchEventIndex(description, date) {
-    const index = fgate_events.findIndex(event => event[1] === description && event[0] === date);
-    alert(`Event index in const fgate_events: ${index}`);
+	const index = fgate_events.findIndex(event => event[1] === description && event[0] === date);
+	alert(`Event index in const fgate_events: ${index}`);
 }
 function searchEventDelete(description, date) {
-    const index = fgate_events.findIndex(event => event[1] === description && event[0] === date);
-    //alert(`Event index in const fgate_events: ${index} is deleted`);
-        const dateIndex = index;
-        fgate_events.splice(dateIndex, 1);
+	const index = fgate_events.findIndex(event => event[1] === description && event[0] === date);
+	//alert(`Event index in const fgate_events: ${index} is deleted`);
+		const dateIndex = index;
+		fgate_events.splice(dateIndex, 1);
 		dataChangeManage();
 }
 function searchEventFinish(description, date) {
-    const index = fgate_events.findIndex(event => event[1] === description && event[0] === date);
-    //alert(`Event index in const fgate_events: ${index} is Finished`);
-        const dateIndex = index;
-        fgate_events[dateIndex][1] = 'Finished : ' + fgate_events[dateIndex][1];
+	const index = fgate_events.findIndex(event => event[1] === description && event[0] === date);
+	//alert(`Event index in const fgate_events: ${index} is Finished`);
+		const dateIndex = index;
+		fgate_events[dateIndex][1] = 'Finished : ' + fgate_events[dateIndex][1];
 		dataChangeManage();
 }
 function searchEventDelay(description, date) {
-    const index = fgate_events.findIndex(event => event[1] === description && event[0] === date);
-    //alert(`Event index in const fgate_events: ${index} already delayed`);
-        const dateIndex = index;
-        const dateToUpdate = new Date(fgate_events[dateIndex][0]);
-        dateToUpdate.setDate(dateToUpdate.getDate() + 1);
-        fgate_events[dateIndex][0] = dateToUpdate.toISOString().split('T')[0];
+	const index = fgate_events.findIndex(event => event[1] === description && event[0] === date);
+	//alert(`Event index in const fgate_events: ${index} already delayed`);
+		const dateIndex = index;
+		const dateToUpdate = new Date(fgate_events[dateIndex][0]);
+		dateToUpdate.setDate(dateToUpdate.getDate() + 1);
+		fgate_events[dateIndex][0] = dateToUpdate.toISOString().split('T')[0];
+		dataChangeManage();
+}
+function searchEventAdvance(description, date) {
+	const index = fgate_events.findIndex(event => event[1] === description && event[0] === date);
+	//alert(`Event index in const fgate_events: ${index} already delayed`);
+		const dateIndex = index;
+		const dateToUpdate = new Date(fgate_events[dateIndex][0]);
+		dateToUpdate.setDate(dateToUpdate.getDate() - 1);
+		fgate_events[dateIndex][0] = dateToUpdate.toISOString().split('T')[0];
 		dataChangeManage();
 }
 
@@ -261,16 +399,15 @@ function searchEventDelay(description, date) {
 	}
 
 
-	document.querySelector('#eventsynch').addEventListener('click',function(e){ synch_fgate_events();})
+	document.querySelector('#eventsynch').addEventListener('click',function(e){ synch_fgate_events(); document.getElementById('src_valx').value = JSON.stringify(fgate_events)})
 	document.querySelector('#eventsave').addEventListener('click',function(e){ saving_fgate_events(); synch_fgate_events(); })
 	
-	function saving_fgate_events(){	localStorage.setItem('fgate_events',JSON.stringify(fgate_events)); };
+	function saving_fgate_events(){	localStorage.setItem('fgate_events',JSON.stringify(fgate_events)); alert("all data saved ")};
 	function synch_fgate_events(){
 		// For Events or plan Promise on each date
 		dataGather();
-
 		dataChangeManage();
-		};
+	};
 	function dataChangeManage(){
 		// tiap ada perubahan di management event mau ( kalau mau tiap erase/delay / finish di save cantumin di sini saja saving_fgate_events() nya
 		console.log("data fgate_events yang ada di sini : /n"+JSON.stringify(fgate_events));
@@ -282,26 +419,24 @@ function searchEventDelay(description, date) {
 // Categorize and display fgate_events
 	dataGather()
 	categorizeAndDisplayfgate_events(fgate_events);
-	
 
 // section of INPUT DATA management
 
+	function addEvent() {
+	  const date = document.getElementById('dateInput').value;
+	  const event = document.getElementById('eventInput').value;
 
-
-
-    function addEvent() {
-      const date = document.getElementById('dateInput').value;
-      const event = document.getElementById('eventInput').value;
-
-      if (date && event) {
-        fgate_events.push([date, event]);
-        dateInput.value = '';
-        eventInput.value = '';
-      } else {
-        alert('Please enter both date and event name.');
-      };
+	  if (date && event) {
+		fgate_events.push([date, event]);
+		console.log([date, event]);
+		console.log("here we get :"+[date, event]);
+		dateInput.value = '';
+		eventInput.value = '';
+	  } else {
+		alert('Please enter both date and event name.');
+	  };
 	  synch_fgate_events(); // generate for managed
-    }
+	}
 
 
 ///calendar section
@@ -313,77 +448,59 @@ const monthNames = ["January", "February", "March", "April", "May", "June", "Jul
 const today = new Date();
 
 function updateMonthYearDisplay() {
-    const monthYearDisplay = document.getElementById('current-month-year');
-    monthYearDisplay.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+	const monthYearDisplay = document.getElementById('current-month-year');
+	monthYearDisplay.textContent = `${monthNames[currentMonth]} ${currentYear}`;
 }
 
 function generateCalendar(year, month) {
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
+	const firstDay = new Date(year, month, 1).getDay();
+	const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    let calendarBody = document.getElementById('calendar-body');
-    calendarBody.innerHTML = ''; // Clear existing rows
-    let date = 1;
+	let calendarBody = document.getElementById('calendar-body');
+	calendarBody.innerHTML = ''; // Clear existing rows
+	let date = 1;
 
-    // Convert dataset to a map of dates to events
-    let noteMap = new Map();
-    fgate_events.forEach(([dateStr, note]) => {
-        if (!noteMap.has(dateStr)) {
-            noteMap.set(dateStr, []);
-        }
-        noteMap.get(dateStr).push(note);
-    });
+	// Convert dataset to a map of dates to events
+	let noteMap = new Map();
+	fgate_events.forEach(([dateStr, note]) => {
+		if (!noteMap.has(dateStr)) { noteMap.set(dateStr, []); }
+		noteMap.get(dateStr).push(note);
+	});
+	for (let i = 0; i < 6; i++) { // 6 weeks to cover all possible dates in a month
+		let row = document.createElement('tr');
+		for (let j = 0; j < 7; j++) {
+			let cell = document.createElement('td');
+			if (i === 0 && j < firstDay) { cell.innerHTML = ''; }
+			else if (date > daysInMonth) { cell.innerHTML = ''; }
+			 else {
+				let dateString = `${year}-${(month + 1).toString().padStart(2, '0')}-${date.toString().padStart(2, '0')}`;
+				let cellContent = `<p>${date}</p>`;
+				if (noteMap.has(dateString)) { noteMap.get(dateString).forEach(note => { cellContent += `<li>${note}</li>`; }); }
+				cell.innerHTML = cellContent;
+				// Highlight today's date
+				if (year === today.getFullYear() && month === today.getMonth() && date === today.getDate()) { cell.classList.add('highlight-today'); }
+				date++;
+			}
+			row.appendChild(cell);
+		}
 
-    for (let i = 0; i < 6; i++) { // 6 weeks to cover all possible dates in a month
-        let row = document.createElement('tr');
-
-        for (let j = 0; j < 7; j++) {
-            let cell = document.createElement('td');
-
-            if (i === 0 && j < firstDay) {
-                cell.innerHTML = ''; // Empty cells before the first day
-            } else if (date > daysInMonth) {
-                cell.innerHTML = ''; // Empty cells after the last day
-            } else {
-                let dateString = `${year}-${(month + 1).toString().padStart(2, '0')}-${date.toString().padStart(2, '0')}`;
-                let cellContent = `<p>${date}</p>`;
-
-                if (noteMap.has(dateString)) {
-                    noteMap.get(dateString).forEach(note => {
-                        cellContent += `<p>${note}</p>`;
-                    });
-                }
-
-                cell.innerHTML = cellContent;
-
-                // Highlight today's date
-                if (year === today.getFullYear() && month === today.getMonth() && date === today.getDate()) {
-                    cell.classList.add('highlight-today');
-                }
-
-                date++;
-            }
-
-            row.appendChild(cell);
-        }
-
-        calendarBody.appendChild(row);
-    }
+		calendarBody.appendChild(row);
+	}
 }
 
 function changeMonth(offset) {
-    currentMonth += offset;
+	currentMonth += offset;
 
-    if (currentMonth > 11) {
-        currentMonth = 0;
-        currentYear++;
-    } else if (currentMonth < 0) {
-        currentMonth = 11;
-        currentYear--;
-    }
+	if (currentMonth > 11) {
+		currentMonth = 0;
+		currentYear++;
+	} else if (currentMonth < 0) {
+		currentMonth = 11;
+		currentYear--;
+	}
 
-    generateCalendar(currentYear, currentMonth);
-    updateMonthYearDisplay();
+	generateCalendar(currentYear, currentMonth);
+	updateMonthYearDisplay();
 }
 
 // Initialize calendar with the current month
@@ -391,132 +508,171 @@ generateCalendar(currentYear, currentMonth);
 updateMonthYearDisplay();
 
 
-    </script>
+	</script>
 	
 	
-    <script>
-        let fgate = [
-            {'hari': 'ahad', 'agenda': 'Structurization <br> SRE<hr>-&-<hr><hr>Review--<hr>'},
-            {'hari': 'senin', 'agenda': 'Journalism <br> Relation Decision<hr>-&-<hr><hr>*planning kerjaan-kerjaan & studi<hr>'},
-            {'hari': 'selasa', 'agenda': 'Data Science <br> Artistic Methode<hr>-&-<hr><hr>*planning Masa depan dan keluarga<hr>'},
-            {'hari': 'rabu', 'agenda': 'Philosophy <br> Strategic Form<hr>-&-<hr><hr>*Melanjutkan kehidupan - kesengangan - harmoni<hr>'},
-            {'hari': 'kamis', 'agenda': 'HPSTEIM <br> Perfectify Methode<hr>-&-<hr><hr>*Uji Krisis & mengenai apa saja yang terjadi di diri, lingkungan, dunia dan waktu<hr>'},
-            {'hari': 'jumat', 'agenda': 'Research <br> Psychological / Control Analysis<hr>-&-<hr><hr>* - <hr>'},
-            {'hari': 'sabat', 'agenda': 'Report-Destruct <br> SDMartial<hr>-&-<hr><hr>--Rest--<hr>'},
-            { 
-                'daily': {
-                    '0': "preparation", 
-                    '6': "structuring",
-                    '7': "starter of formal study",
-                    '12': "Day Time",
-                    '13': "starter of formal study",
-                    '17': "Convedera",
-                    '18': "Al-Muslim*<hr>Night Event",
-                    '20': "starter of addLeissen",
-                    '21': "Tasking",
-                    '22': "Serenada / DicotomousLinepath",
-                    '23': "Regression / Return Fallen"
-                }
-            }
-        ];
-        let aim4 = [
-            {'hari': 'ahad', 'agenda': '<ul style="text-align: left"><li>Memori Histori</li><li>Rangkuman Mikro-/-Biologi</li><hr><li>Wallstreet Planning</li><li>GIA Strategy Knowledge</li><hr><li>Next step planning</li><li>Dakwah Sosmed</li><ul>'},
-            {'hari': 'senin', 'agenda': '<ul style="text-align: left"><li>Alkimia</li><li>Business and Management Update</li><hr><li>Warfare Condition</li><li>Infiltrating Detection Awareness</li><hr><li>Fiqh Ahklak</li></li>Tafsir & track hadist/ijma/tarikh/syubhat</li></ul>'},
-            {'hari': 'selasa', 'agenda': '<ul style="text-align: left"><li>Seni Sastra Prosa</li><li>Bahasa Musika dan Informasi-budaya</li><hr><li>LemHamNas</li><li>GeoStrategi dan Ekonomi Dunia</li><hr><li>Shiroh Nabawiyah</li><li>Thibun Nabawiyah</li></ul>'},
-            {'hari': 'rabu', 'agenda': '<ul style="text-align: left"><li>Psikologi</li><li>Refreshing</li><hr><li>Institution Checking</li><li>Political Interest</li><hr><li>Al Quran Wal Hadist</li><li>KisahSahabat Radiallahuanhu</li></ul>'},
-            {'hari': 'kamis', 'agenda': '<ul style="text-align: left"><li>IT Management</li><li>>Programming website</li><hr><li>Social Opinion Movement</li><li>Rule and Policy effect analyze</li><hr><li>Ikut pengajian</li><li>Expand Mufties Relationship</li></ul>'},
-            {'hari': 'jumat', 'agenda': '<ul style="text-align: left"><li>Application Programming</li><li>Reference Management</li><hr><li>Spying and Leaks DB</li><li>Chaotic flow</li><hr><li>Jihad</li><li>Gazhwul Fiqriyah</li></ul>'},
-            {'hari': 'sabat', 'agenda': '<ul style="text-align: left"><li>Script Programming</li><li>Retorika penyusunan kata</li><hr><li>Rehat</li><li>Custom</li><hr><li>Explore relevance</li><li>Gazhwul fiqriah</li></ul>'},
-            { 
-                'daily': {
-                    '0': "Rest - ", 
-                    '4': "Blue Horizon: Hope, faith & Believe",
-                    '6': "set Awareness self Esteem, Personality, Goals",
-                    '7': "Gracious Acta I",
-                    '8': "-coffee break-",
-                    '9': "Gracious Acta II<hr>",
-                    '11': "---a Day passed--- <hr>",
-                    '13': "Gracipus Acta III",
-                    '15': "Horizon: Evening",
-                    '16': "Gracious Acta IV <br>&<br>a page of existed proof",
-                    '17': "rest<hr>",
-                    '18': "Dawn of abys<hr>",
-                    '19': "Praying Night",
-                    '21': "Rest - ",
-                    '24': "until we met again"
-                }
-            }
-        ];
+	<script>
+		let fgate = [
+			{'hari': 'ahad', 'agenda': 'Structurization <br> SRE<hr>-&-<hr><hr>Review--<hr>'},
+			{'hari': 'senin', 'agenda': 'Journalism <br> Relation Decision<hr>-&-<hr><hr>*planning kerjaan-kerjaan & studi<hr>'},
+			{'hari': 'selasa', 'agenda': 'Data Science <br> Artistic Methode<hr>-&-<hr><hr>*planning Masa depan dan keluarga<hr>'},
+			{'hari': 'rabu', 'agenda': 'Philosophy <br> Strategic Form<hr>-&-<hr><hr>*Melanjutkan kehidupan - kesengangan - harmoni<hr>'},
+			{'hari': 'kamis', 'agenda': 'HPSTEIM <br> Perfectify Methode<hr>-&-<hr><hr>*Uji Krisis & mengenai apa saja yang terjadi di diri, lingkungan, dunia dan waktu<hr>'},
+			{'hari': 'jumat', 'agenda': 'Research <br> Psychological / Control Analysis<hr>-&-<hr><hr>* - <hr>'},
+			{'hari': 'sabat', 'agenda': 'Report-Destruct <br> SDMartial<hr>-&-<hr><hr>--Rest--<hr>'},
+			{ 
+				'daily': {
+					'0': "preparation", 
+					'6': "structuring",
+					'7': "starter of formal study",
+					'12': "Day Time",
+					'13': "starter of formal study",
+					'17': "Convedera",
+					'18': "Al-Muslim*<hr>Night Event",
+					'20': "starter of addLeissen",
+					'21': "Tasking",
+					'22': "Serenada / DicotomousLinepath",
+					'23': "Regression / Return Fallen"
+				}
+			}
+		];
+		let aim4 = [
+			{'hari': 'ahad', 'agenda': '<ul style="text-align: left"><li>Memori Histori : <b><sup onclick="alert(`make sure data tersimpan dengan baik dan accessable, terbackup & terupdate tiap progress termonitor`);">[i]</sup></b></li><li><i>en Nightangele</i><b><sup onclick="alert(`Rangkuman Kesehatan, Farmasi, Mikro, Biologi, filosofi, Realita Sosial dan lain-lain`)">[i]</sup></b></li><hr><li>The Plan <b><sup onclick="alert(`Money, Event, Time, Action, learn spent and finishing of MMTP, 3XLSX Progreessing Monitor, Your helath, Your condition, family, future steps`)">[i]</sup></b></li><li>Makro Reality | <b><sup onclick="alert(`suvh as Networking, NEWS, Political Flow, Urgentcy matters-labeled information, Global Intelegent Analysis and its Strategy to counter -Knowledge`);">[i]</sup></b></li><hr><li>Next step planning</li><li>Tindakan nyata<sup onclick="alert(`in order to make yourself aware, your time is well spent, there is no regretable apathy to leave behind`)">[#]</sup></li><ul>'},
+			{'hari': 'senin', 'agenda': '<ul style="text-align: left"><li>Alkimia</li><li>Business and Management Update</li><hr><li>Warfare Condition</li><li>Infiltrating Detection Awareness</li><hr><li>Fiqh Ahklak</li></li>Tafsir & track hadist/ijma/tarikh/syubhat</li></ul>'},
+			{'hari': 'selasa', 'agenda': '<ul style="text-align: left"><li>Seni Sastra Prosa</li><li>Bahasa Musika dan Informasi-budaya</li><hr><li>LemHamNas</li><li>GeoStrategi dan Ekonomi Dunia</li><hr><li>Shiroh Nabawiyah</li><li>Thibun Nabawiyah</li></ul>'},
+			{'hari': 'rabu', 'agenda': '<ul style="text-align: left"><li>Psikologi</li><li>Refreshing</li><hr><li>Institution Checking</li><li>Political Interest</li><hr><li>Al Quran Wal Hadist</li><li>KisahSahabat Radiallahuanhu</li></ul>'},
+			{'hari': 'kamis', 'agenda': '<ul style="text-align: left"><li>IT Management</li><li>>Programming website</li><hr><li>Social Opinion Movement</li><li>Rule and Policy effect analyze</li><hr><li>Ikut pengajian</li><li>Expand Mufties Relationship</li></ul>'},
+			{'hari': 'jumat', 'agenda': '<ul style="text-align: left"><li>APP+</li><li>Referensi Management</li><hr><li>Arsip analisa Informasi and Leaks DB</li><li>Chaotic flow</li><hr><li>Jihad</li><li>Gazhwul Fiqriyah</li></ul>'},
+			{'hari': 'sabat', 'agenda': '<ul style="text-align: left"><li>Script Programming</li><li>Retorika penyusunan kata</li><hr><li>Rehat</li><li>Custom</li><hr><li>Explore relevance</li><li>Gazhwul fiqriah</li></ul>'},
+			{ 
+				'daily': {
+					'0': "Rest - ", 
+					'4': "Blue Horizon: Hope, faith & Believe",
+					'6': "set Awareness self Esteem, Personality, Goals",
+					'7': "Gracious Acta I",
+					'8': "-coffee break-",
+					'9': "Gracious Acta II<hr>",
+					'11': "---a Day passed--- <hr>",
+					'13': "Gracipus Acta III",
+					'15': "Horizon: Evening",
+					'16': "Gracious Acta IV <br>&<br>a page of existed proof",
+					'17': "rest<hr>",
+					'18': "Dawn of abys<hr>",
+					'19': "Praying Night",
+					'21': "Rest - ",
+					'24': "until we met again"
+				}
+			}
+		];
 
-        function displayRoutines() {
-            for (let i = 0; i < 7; i++) {
-                let dayName = ['ahad', 'senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabat'][i];
-                document.getElementById(dayName).innerHTML = fgate[i].agenda;
-            }
+		function displayRoutines() {
+			for (let i = 0; i < 7; i++) {
+				let dayName = ['ahad', 'senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabat'][i];
+				document.getElementById(dayName).innerHTML = fgate[i].agenda;
+			}
 			let datafordaily_fgate = fgate[7];
 			let targetfordaily_fgate = document.getElementById('dailyRoutine');
 			displayDailyRoutines(datafordaily_fgate, targetfordaily_fgate);
 
 
-            for (let i = 0; i < 7; i++) {
-                let dayName = ['ahad2', 'senin2', 'selasa2', 'rabu2', 'kamis2', 'jumat2', 'sabat2'][i]; // target ganti ntar sama sistem diganti hari di data aim4
-                document.getElementById(dayName).innerHTML = aim4[i].agenda;
-            }
+			for (let i = 0; i < 7; i++) {
+				let dayName = ['ahad2', 'senin2', 'selasa2', 'rabu2', 'kamis2', 'jumat2', 'sabat2'][i]; // target ganti ntar sama sistem diganti hari di data aim4
+				document.getElementById(dayName).innerHTML = aim4[i].agenda;
+			}
 
 			let datafordaily_aim4 = aim4[7]; // sementara
 			let targetfordaily_aim4 = document.getElementById('dailyRoutine2');
 
 			displayDailyRoutines(datafordaily_aim4, targetfordaily_aim4);
 			highlightDailyRoutine();
-        }
+		}
 
-        function displayDailyRoutines(datafordaily_index, targetfordaily_index) {
-            let dailyRoutine = datafordaily_index.daily;
-            let dailyRoutineStr = '';
-            for (let time in dailyRoutine) {
-                dailyRoutineStr += `<span id="hour-${time}">${time}:00 - ${dailyRoutine[time]}</span><br>`;
-            }
-            targetfordaily_index.innerHTML = dailyRoutineStr;
-            
-        }
+		function displayDailyRoutines(datafordaily_index, targetfordaily_index) {
+			let dailyRoutine = datafordaily_index.daily;
+			let dailyRoutineStr = '';
+			for (let time in dailyRoutine) {
+				dailyRoutineStr += `<span id="hour-${time}">${time}:00 - ${dailyRoutine[time]}</span><br>`;
+			}
+			targetfordaily_index.innerHTML = dailyRoutineStr;
+			
+		}
 
 function highlightDailyRoutine() {
-    let currentHour = new Date().getHours();
-    let elements = document.querySelectorAll('[id^=hour-]');
-    elements.forEach(element => {
-        let hour = parseInt(element.id.split('-')[1]);
-        if (hour < currentHour) {
-            element.classList.add('passed');
-        } else if (hour === currentHour) {
-            element.classList.add('current');
-        } else {
-            element.classList.add('upcoming');
-        }
-    });
+	let currentHour = new Date().getHours();
+	let elements = document.querySelectorAll('[id^=hour-]');
+	elements.forEach(element => {
+		let hour = parseInt(element.id.split('-')[1]);
+		if (hour < currentHour) {
+			element.classList.add('passed');
+		} else if (hour === currentHour) {
+			element.classList.add('current');
+		} else {
+			element.classList.add('upcoming');
+		}
+	});
+}
+	function highlightToday() {
+		let today = new Date().getDay();
+		let dayNames = ['ahad', 'senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabat'];
+		let todayName = dayNames[today];
+		document.getElementById(todayName).classList.add('today');	
+		//sementara -tak terikat fgate/aim4
+		let todayName2 = dayNames[today]+'2';
+		document.getElementById(todayName2).classList.add('today');
+	}
+	displayRoutines();
+	highlightToday();
+</script>
+
+    <script>
+
+// Function to load and merge data from external file
+function overwriteByExternalData() {
+  // Simulating loading external data
+  let externalData = document.getElementById('src_valx').value;
+  console.log(externalData+' are externalData');
+  
+  // pre saving test : Load current localStorage data -then- check
+  let previousData = JSON.parse(localStorage.getItem('fgate_events'));
+  fgate_events = JSON.parse(externalData);
+  
+  // overwrote external data with current data & Save external data back to localStorage
+  localStorage.setItem('fgate_events', (externalData));
+  //checking if they was stored right
+  console.log('previous data : \n \n '+previousData+"\n \n"+"while stored data now is : \n \n"+externalData);
+  alert("overwrite by data in textarea successfully finished. \n saved to local storage of fgate_events");
 }
 
-		
-		
-        function highlightToday() {
-            let today = new Date().getDay();
-            let dayNames = ['ahad', 'senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabat'];
-            let todayName = dayNames[today];
-            document.getElementById(todayName).classList.add('today');
-			
-			//sementara -tak terikat fgate/aim4
-			let todayName2 = dayNames[today]+'2';
-            document.getElementById(todayName2).classList.add('today');
-        }
+
+// Function to download localStorage data as a text file
+function downloadLocalStorage() {
+  let data = JSON.parse(localStorage.getItem('fgate_events'));
+  if (data) {
+    let now = new Date();
+    let formattedDate = `${now.getDate()}-${now.getMonth() + 1}-${now.getFullYear()}_${now.getHours()}:${now.getMinutes()}`;
+    let filename = `extdata_${formattedDate}.txt`;
+    let content = data.map(entry => `${entry[0]}: ${entry[1]}`).join('\n');
+    let blob = new Blob([content], { type: 'text/plain' });
+    let url = URL.createObjectURL(blob);
+
+    // Create a link and click to trigger download
+    let a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } else {
+    alert("No data to download.");
+  }
+}
 
 
 
-        displayRoutines();
-        highlightToday();
 
-
-
-
-
+    </script>
+<script>
 ////Bug: <font color=""> etc.. (maybe u can use innerText? and for using <hr> and any element property u can add function);
 /// Bug: update nya nggak nyampe
 //// Bug: refreshing mulu pas enter teh
@@ -545,5 +701,13 @@ NOW Acuan data nya user last save , last seen may not concern & las seen no care
 	
 	
 */	
-    </script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const items = document.querySelectorAll('#checklist li');
+            items.forEach(item => {
+                item.addEventListener('click', function() {
+                    this.classList.toggle('checked');
+                });
+            });
+        });
+	</script>
 </body>
