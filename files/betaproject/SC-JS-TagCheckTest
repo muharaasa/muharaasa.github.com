@@ -1,0 +1,531 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tags Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea, input {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        button {
+            margin-right: 10px;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        li {
+            border: 1px solid #ccc;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .fgate_tagparent {
+            font-weight: bold;
+        }
+        .fgate_tagchild {
+            margin-left: 20px;
+            font-weight: bold;
+        }
+        .fgate_tagsubchild {
+            margin-left: 40px;
+            font-weight: bold;
+        }
+        .fgate_tagdefault {
+            color: gray;
+        }
+        .event-content {
+            color: navy;
+        }
+        .event-date {
+            color: red;
+        }
+        /* Styles for pop-up */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .popup-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 500px;
+            width: 100%;
+        }
+        .close-btn {
+            cursor: pointer;
+            float: right;
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Tags Analyzer</h1>
+
+    <!-- Input for date -->
+    <label for="dateInput">Date:</label>
+    <input type="date" id="dateInput">
+
+    <!-- Input for event text -->
+    <label for="eventInput">Event Text:</label>
+    <textarea id="eventInput" rows="4" placeholder="Enter event text here..."></textarea>
+
+    <!-- Buttons -->
+    <button onclick="addEvent()">Add Event</button>
+	<hr>
+    <button onclick="showTagsAnalysis()">Show Tags Analysis</button>
+    <button onclick="calculateTags()">Calculation in Tags</button>
+    <button onclick="analyzeDates()">Dates Involvement Analysis</button>
+    <button onclick="generateTagReport()">Tags over Dates</button>
+	
+	    <!-- Pop-up -->
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span id="close-btn" class="close-btn">&times;</span>
+            <div id="popup-content"></div>
+        </div>
+    </div>
+
+    <!-- Container to display the analyzed nested list -->
+    <ul id="fgate-list"></ul>
+
+    <script>
+        // Sample events data
+        const fgate_events = [
+            ["2024-07-04", "Finished : ##crushed #saint theres 91 Accomplishment made since today"],
+            ["2024-07-03", "Finished : either it in Project planing"],
+            ["2024-07-01", "Finished : either some near miss etc #saint ##crushed"],
+            ["2024-07-02", "Finished : #hahahaha but eck yah"],
+            ["2024-07-04", "Finished : my dear idm project deleted data"],
+            ["2024-05-21", "Finished : *SCREAM INTERNALLY"],
+            ["2024-06-07", "Finished : CV CL i sent"],
+            ["2024-06-20", "Finished : bye bye to all"],
+            ["2024-06-04", "Finished : #saint huaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],
+            ["2024-06-19", "Finished : and any resentment - 2024-07-01"],
+            ["2024-08-10", "Finished : #project ##planning ###details A well-executed plan"],
+            ["2024-08-11", "Finished : #project ##execution ###tasks Task list finalized"],
+            ["2024-08-12", "Finished : #personal ##fitness ###routine Daily workout completed"]
+        ];
+
+        // Function to set the current date as default in the date input
+        function setDefaultDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('dateInput').value = today;
+        }
+
+        // Function to add an event to the list
+        function addEvent() {
+            const dateInput = document.getElementById('dateInput').value;
+            const eventInput = document.getElementById('eventInput').value;
+
+            if (dateInput && eventInput) {
+                fgate_events.push([dateInput, eventInput]);
+                alert('Event added!');
+                document.getElementById('eventInput').value = '';
+                setDefaultDate();
+            } else {
+                alert('Please enter both date and event text.');
+            }
+        }
+
+        // Function to generate and display the nested list based on the events
+        function showTagsAnalysis() {
+            document.getElementById('fgate-list').innerHTML = generateNestedList(fgate_events);
+        }
+
+        // Function to generate the nested list
+// Function to generate the nested list
+// Function to generate the nested list
+function generateNestedList(events) {
+    let topics = {};
+
+    events.forEach(event => {
+        const date = event[0];
+        const description = event[1];
+
+        // Identify topics and subtopics
+        const parts = description.split(" ");
+        let topic = null;
+        let subtopic = null;
+        let subsubtopic = null;
+        let content = [];
+
+        parts.forEach(part => {
+            if (part.startsWith("####")) {
+                subsubtopic = part;
+            } else if (part.startsWith("###")) {
+                subtopic = part;
+            } else if (part.startsWith("##")) {
+                subtopic = part;
+            } else if (part.startsWith("#")) {
+                topic = part;
+            } else {
+                content.push(part);
+            }
+        });
+
+        // Filter out events without tags
+        if (topic || subtopic || subsubtopic) {
+            const listItem = `<span class="event-date">${date}</span> - <span class="event-content">${content.join(" ")}</span>`;
+
+            if (topic) {
+                if (!topics[topic]) {
+                    topics[topic] = { content: [], subtopics: {} };
+                }
+                if (subtopic) {
+                    if (!topics[topic].subtopics[subtopic]) {
+                        topics[topic].subtopics[subtopic] = { content: [], subsubtopics: {} };
+                    }
+                    if (subsubtopic) {
+                        if (!topics[topic].subtopics[subtopic].subsubtopics[subsubtopic]) {
+                            topics[topic].subtopics[subtopic].subsubtopics[subsubtopic] = [];
+                        }
+                        topics[topic].subtopics[subtopic].subsubtopics[subsubtopic].push(listItem);
+                    } else {
+                        topics[topic].subtopics[subtopic].content.push(listItem);
+                    }
+                } else {
+                    topics[topic].content.push(listItem);
+                }
+            } else {
+                if (!topics["default"]) {
+                    topics["default"] = [];
+                }
+                topics["default"].push(listItem);
+            }
+        }
+    });
+
+    let output = '';
+
+    // Build nested structure
+    let sortedTopics = Object.keys(topics).sort();
+
+    sortedTopics.forEach(topic => {
+        if (topic !== "default") {
+            output += `<li class='fgate_tagparent'>${topic}<br>`;
+            topics[topic].content.sort().forEach(item => {
+                output += `${item}<br>`;
+            });
+            let sortedSubtopics = Object.keys(topics[topic].subtopics).sort();
+            sortedSubtopics.forEach(subtopic => {
+                output += `<li class='fgate_tagchild'>${subtopic}<br>`;
+                topics[topic].subtopics[subtopic].content.sort().forEach(item => {
+                    output += `${item}<br>`;
+                });
+                let sortedSubsubtopics = Object.keys(topics[topic].subtopics[subtopic].subsubtopics).sort();
+                sortedSubsubtopics.forEach(subsubtopic => {
+                    output += `<li class='fgate_tagsubchild'>${subsubtopic}<br>`;
+                    topics[topic].subtopics[subtopic].subsubtopics[subsubtopic].sort().forEach(item => {
+                        output += `${item}<br>`;
+                    });
+                    output += `</li>`;
+                });
+                output += `</li>`;
+            });
+            output += `</li>`;
+        } else {
+            topics["default"].sort().forEach(item => {
+                output += `<li class='fgate_tagdefault'>${item}</li>`;
+            });
+        }
+    });
+
+    return output;
+}
+
+
+
+        // Function to calculate and display the number of child and subchild tags
+function calculateTags() {
+    let topics = {};
+
+    // Process the events to build the nested structure and count the tags
+    fgate_events.forEach(event => {
+        const description = event[1];
+        const parts = description.split(" ");
+        let topic = null;
+        let subtopic = null;
+        let subsubtopic = null;
+        let subsubsubtopic = null;
+
+        parts.forEach(part => {
+            if (part.startsWith("####")) {
+                subsubsubtopic = part;
+            } else if (part.startsWith("###")) {
+                subsubtopic = part;
+            } else if (part.startsWith("##")) {
+                subtopic = part;
+            } else if (part.startsWith("#")) {
+                topic = part;
+            }
+        });
+
+        if (topic) {
+            if (!topics[topic]) {
+                topics[topic] = { subtopics: {} };
+            }
+            if (subtopic) {
+                if (!topics[topic].subtopics[subtopic]) {
+                    topics[topic].subtopics[subtopic] = { subsubtopics: {} };
+                }
+                if (subsubtopic) {
+                    if (!topics[topic].subtopics[subtopic].subsubtopics[subsubtopic]) {
+                        topics[topic].subtopics[subtopic].subsubtopics[subsubtopic] = { subsubsubtopics: {} };
+                    }
+                    if (subsubsubtopic) {
+                        if (!topics[topic].subtopics[subtopic].subsubtopics[subsubtopic].subsubsubtopics[subsubsubtopic]) {
+                            topics[topic].subtopics[subtopic].subsubtopics[subsubtopic].subsubsubtopics[subsubsubtopic] = 0;
+                        }
+                        topics[topic].subtopics[subtopic].subsubtopics[subsubtopic].subsubsubtopics[subsubsubtopic]++;
+                    }
+                }
+            }
+        }
+    });
+
+    // Helper function to sort and generate HTML
+    function generateList(items, level) {
+        let output = '';
+        const sortedItems = Object.keys(items).sort(); // Sort keys in ascending order
+        sortedItems.forEach(item => {
+            if (level === 1) {
+                output += `<li class='fgate_tagparent'>${item} (${Object.keys(items[item].subtopics).length} children)<br>`;
+            } else if (level === 2) {
+                output += `<ul><li class='fgate_tagchild'>${item} (${Object.keys(items[item].subsubtopics).length} subchildren)<br>`;
+            } else if (level === 3) {
+                output += `<ul><li class='fgate_tagsubchild'>${item} (${Object.keys(items[item].subsubsubtopics).length} subsubchildren)<br>`;
+            } else if (level === 4) {
+                output += `<ul><li class='fgate_tagsubsubchild'>${item} (${items[item]})</li></ul>`;
+            }
+
+            if (level < 4) {
+                const subItems = (level === 1) ? items[item].subtopics : (level === 2) ? items[item].subsubtopics : items[item].subsubsubtopics;
+                output += generateList(subItems, level + 1);
+            }
+
+            if (level === 1) {
+                output += `</li>`;
+            } else if (level === 2) {
+                output += `</li></ul>`;
+            } else if (level === 3) {
+                output += `</li></ul>`;
+            }
+        });
+        return output;
+    }
+
+    // Generate output with counts
+    let output = generateList(topics, 1);
+    document.getElementById('fgate-list').innerHTML = output;
+}
+
+
+        // Function to analyze dates involvement
+        function analyzeDates() {
+            let dateCounts = {};
+
+            fgate_events.forEach(event => {
+                const date = event[0];
+                const description = event[1];
+                const parts = description.split(" ");
+                
+                parts.forEach(part => {
+                    if (part.startsWith("#")) {
+                        if (!dateCounts[date]) {
+                            dateCounts[date] = { tags: {} };
+                        }
+                        if (!dateCounts[date].tags[part]) {
+                            dateCounts[date].tags[part] = { count: 0 };
+                        }
+                        dateCounts[date].tags[part].count++;
+                    }
+                });
+            });
+
+            // Generate output
+            let output = '';
+            for (let date in dateCounts) {
+                output += `<li>Date: ${date}<br>`;
+                for (let tag in dateCounts[date].tags) {
+                    output += `Tag: ${tag} - Count: ${dateCounts[date].tags[tag].count}<br>`;
+                }
+                output += `</li>`;
+            }
+
+            document.getElementById('fgate-list').innerHTML = output;
+        }
+
+        //function for analysis of tags over dates
+/// Helper function to format dates
+function formatDate(date) {
+    const d = new Date(date);
+    return d.toLocaleDateString('en-GB'); // Format: dd/mm/yyyy
+}
+
+// Helper function to calculate days ago from today
+function daysAgo(date) {
+    const today = new Date();
+    const diffTime = today - new Date(date);
+    return Math.floor(diffTime / (1000 * 60 * 60 * 24)); // Days
+}
+
+// Helper function to parse tags from a string
+function parseTags(text) {
+    const tags = {};
+    const tagPattern = /(#+)\w+/g;
+    let match;
+    while ((match = tagPattern.exec(text)) !== null) {
+        const tag = match[0];
+        const level = match[1].length; // Determine tag level
+        if (!tags[level]) {
+            tags[level] = new Set();
+        }
+        tags[level].add(tag);
+    }
+    return tags;
+}
+
+// Helper function to get tag details
+function getTagDetails(tag, level, tagSet) {
+    const results = {
+        quantity: 0,
+        trend: null,
+        dense: 0,
+        dates: [],
+        lastSeen: null
+    };
+
+    fgate_events.forEach(([date, text]) => {
+        const currentDate = new Date(date);
+        if (text.includes(tag)) {
+            if (!results.dates.includes(date)) {
+                results.dates.push(date);
+            }
+            results.quantity++;
+            if (results.trend === null) {
+                results.trend = { start: currentDate, end: currentDate };
+            } else {
+                results.trend.end = currentDate;
+            }
+            results.lastSeen = date;
+        }
+    });
+
+    if (results.trend) {
+        const trendDuration = (results.trend.end - results.trend.start) / (1000 * 60 * 60 * 24); // Days
+        results.dense = results.quantity / results.dates.length; // Density: quantity / number of dates the tag appeared
+        results.trend = {
+            start: formatDate(results.trend.start),
+            end: formatDate(results.trend.end)
+        };
+    }
+
+    if (results.lastSeen) {
+        results.lastSeen = `${formatDate(results.lastSeen)}, ${daysAgo(results.lastSeen)} days ago`;
+    }
+
+    return results;
+}
+
+// Function to show pop-up
+function showPopup(content) {
+    document.getElementById('popup-content').innerHTML = content;
+    document.getElementById('popup').style.display = 'flex';
+}
+
+// Function to hide pop-up
+function hidePopup() {
+    document.getElementById('popup').style.display = 'none';
+}
+
+// Add event listener to close button
+document.getElementById('close-btn').addEventListener('click', hidePopup);
+
+// Add event listener to close pop-up when clicking outside
+document.getElementById('popup').addEventListener('click', (event) => {
+    if (event.target === document.getElementById('popup')) {
+        hidePopup();
+    }
+});
+
+// Generate HTML report with nested tags and buttons
+function generateTagReport() {
+    const events = fgate_events;
+    const tags = {};
+    const displayedTags = new Set();
+
+    events.forEach(([date, text]) => {
+        const eventTags = parseTags(text);
+        for (const level in eventTags) {
+            if (!tags[level]) {
+                tags[level] = new Set();
+            }
+            eventTags[level].forEach(tag => tags[level].add(tag));
+        }
+    });
+
+    // Function to generate HTML for tags
+    function createTagHTML(tag, level) {
+        if (displayedTags.has(tag)) return ''; // Avoid displaying the tag if already shown
+
+        const details = getTagDetails(tag, level, tags[level]);
+        displayedTags.add(tag); // Mark the tag as displayed
+
+        let nestedHtml = '';
+
+        for (let l = level + 1; l <= 3; l++) {
+            if (tags[l] && tags[l].size > 0) {
+                tags[l].forEach(childTag => {
+                    if (events.some(([date, text]) => text.includes(childTag) && text.includes(tag))) {
+                        nestedHtml += `<div class="nested-tag" style="margin-left: ${l * 20}px;">${createTagHTML(childTag, l)}</div>`;
+                    }
+                });
+            }
+        }
+
+        return `
+            <div class="tag">
+                <h3>${tag} <br> Last seen in: ${details.lastSeen}</h3>
+                <button onclick="showPopup('Quantity: ${details.quantity} <br> Density: ${details.dense.toFixed(2)}<br> Trend: <br> Start in: ${details.trend.start} <br> Until: ${details.trend.end} <br> How many dates involved: ${details.dates.length}')">Trend</button>
+                <button onclick="showPopup('How many dates involved: ${details.dates.length} <br> Dates:<br> - ${details.dates.join(' <br> - ')}')">Dates</button>
+                ${nestedHtml}
+            </div>
+        `;
+    }
+
+    let html = '<div class="tags-container">';
+    for (const level in tags) {
+        tags[level].forEach(tag => {
+            html += createTagHTML(tag, parseInt(level));
+        });
+    }
+    html += '</div>';
+
+    document.getElementById('fgate-list').innerHTML = html;
+}
+
+
+
+        // Initialize with the current date
+        setDefaultDate();
+    </script>
+
+</body>
+</html>
