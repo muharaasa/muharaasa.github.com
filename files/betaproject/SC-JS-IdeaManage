@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idea Management</title>
+    <style>
+        ul {
+            list-style-type: none;
+        }
+        .idea-item {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class='whitehighlight'>
+    <details><summary>Transfer data</summary>
+        <center><ul style="text-align: left">to save : <li>click fill => click Download, </li><br> to load : <li>simply fill the textarea with the data <sup>(may be your copy text of your .txt)</sup></li><li> => then overwrote <sub>& refresh yourpage/reload script</sub></li></ul><br>
+        <button id="eventsynch">fill the data</button> | 
+        <button onclick="downloadLocalStorage()">Download existing Local data to file</button>
+        <textarea style="width: 90%; height: 30%;" id='src_valx'></textarea><br>
+        <button onclick="overwriteByExternalData()">overwrite 'existing local data' from -data above-</button>
+		</center>
+    </details>
+</div>
+
+<script>
+document.querySelector('#eventsynch').addEventListener('click', function(e) { 
+    // Check if storedidea exists in localStorage
+    let storedData = localStorage.getItem('storedidea');
+    
+    if (storedData) {
+        // Parse the data and write it into the textarea
+        let storedidea = JSON.parse(storedData);
+        document.getElementById('src_valx').value = JSON.stringify(storedidea, null, 2); // Format JSON with indentation
+        alert("Data loaded from localStorage and written to the textarea.");
+    } else {
+        // Alert if no data is found
+        alert("No data found in localStorage under 'storedidea'.");
+    }
+});
+
+// Function to load and merge data from external file
+function overwriteByExternalData() {
+    // Confirmation prompt
+    if (confirm("Are you sure you want to overwrite the existing local data with the data in the textarea?")) {
+        // Simulating loading external data
+        let externalData = document.getElementById('src_valx').value;
+        let previousData = JSON.parse(localStorage.getItem('storedidea'));
+        storedidea = JSON.parse(externalData);
+
+        // Overwrite external data with current data & Save external data back to localStorage
+        localStorage.setItem('storedidea', externalData);
+
+        // Checking if data was stored correctly
+        console.log('Previous data:\n\n' + previousData + "\n\n" + 'Stored data now:\n\n' + externalData);
+        alert("Overwrite by data in textarea successfully finished. Saved to local storage of 'storedidea'.");
+    } else {
+        alert("Action canceled. Data was not overwritten.");
+    }
+}
+
+// Function to download localStorage data as a text file
+function downloadLocalStorage() {
+    document.getElementById('src_valx').value = JSON.stringify(storedidea);
+    
+    // Prepare the file name
+    let now = new Date();
+    let formattedDate = `${now.getDate()}-${now.getMonth() + 1}-${now.getFullYear()}_${now.getHours()}:${now.getMinutes()}`;
+    let filename = `extdata_storedidea_${formattedDate}.txt`; // Change it to any name you like
+    
+    // Fill the file content & download it
+    const data = document.getElementById('src_valx').value;
+    const blob = new Blob([data], { type: 'text/plain' });
+    const link = document.createElement('a'); 
+    link.download = filename; 
+    link.href = window.URL.createObjectURL(blob);
+    document.body.appendChild(link); 
+    link.click(); 
+    document.body.removeChild(link);
+}
+</script>
+
+    <h1>Idea Management</h1>
+    <div>
+        <input type="text" id="dataInput" placeholder="Enter idea data">
+        <br><textarea type="text" id="commentaryInput" placeholder="Enter commentary">-</textarea>
+        <br><button onclick="saveIdea('concern'); refreshDisplay_Idea()">Save as Concern</button>
+        <br><button onclick="save_storedidea()">save</button> last synch in : <i id='lasttime_save_storedidea'> [?] </i>
+        <br><button onclick="load_storedidea()">load</button> last synch up : <i id='lasttime_load_storedidea'> [?] </i>
+    </div>
+    <div>
+        currently displayed : <u id='type_storedidea'> [?] </u>
+        <button onclick="showIdeas('concern'); ">Show Concerns</button>
+        <button onclick="showIdeas('archieve')">Show Archive</button>
+    </div>
+    <ul id="concernList"></ul>
+    <ul id="archieveList"></ul>
+
+<script type="text/javascript">
+
+let storedidea = localStorage.getItem('storedidea');
+if (!storedidea) { storedidea = JSON.stringify([ [' idea 1', 'commentary about it.', 'concern'], [' idea 2', 'commentary about it too', 'archieve'] ]); localStorage.setItem('storedidea', storedidea);}
+else { storedidea = JSON.parse(storedidea);}
+
+load_storedidea();
+save_storedidea();
+showIdeas('concern');// : )
+
+function load_storedidea(){
+	let storedidea = localStorage.getItem('storedidea');
+	if (!storedidea) { storedidea = JSON.stringify([ [' idea 1', 'commentary about it.', 'concern'], [' idea 2', 'commentary about it too', 'archieve'] ]); localStorage.setItem('storedidea', storedidea);}
+	else { storedidea = JSON.parse(storedidea);}
+	let lasttime_load_storedidea = getCurrentTimestamp(); document.getElementById('lasttime_load_storedidea').innerHTML = lasttime_load_storedidea;
+}
+
+function save_storedidea() {
+	localStorage.setItem('storedidea',JSON.stringify(storedidea));
+	let lasttime_save_storedidea = getCurrentTimestamp(); document.getElementById('lasttime_save_storedidea').innerHTML = lasttime_save_storedidea;
+}
+function getCurrentTimestamp() {
+    let now = new Date();
+    let msmsms = now.getMilliseconds().toString().padStart(3, '0');
+    let ss = now.getSeconds().toString().padStart(2, '0');
+    let mm = now.getMinutes().toString().padStart(2, '0');
+    let hh = now.getHours().toString().padStart(2, '0');
+    let dd = now.getDate().toString().padStart(2, '0');
+    let month = (now.getMonth() + 1).toString().padStart(2, '0');
+    let yy = now.getFullYear().toString().substr(-2);
+
+    return `${yy}/${month}/${dd} - | ${hh}:${mm}:${ss}, <sub>${msmsms}</sub> |`;
+}
+
+function refreshDisplay_Idea(){ let type = document.getElementById("type_storedidea").innerHTML; showIdeas(type); }
+
+function saveIdea(type) {
+    const dataInput = document.getElementById('dataInput').value;
+    const commentaryInput = document.getElementById('commentaryInput').value;
+
+    if (dataInput && commentaryInput) {
+        storedidea.push([dataInput, commentaryInput, type]);
+        document.getElementById('dataInput').value = ' # ';
+        document.getElementById('commentaryInput').value = ' (no commentary) ';
+    } else {
+        alert('Please enter both data and commentary');
+    }
+}
+
+function showIdeas(type) {
+    const concernList = document.getElementById('concernList');
+    const archieveList = document.getElementById('archieveList');
+    concernList.innerHTML = '';
+    archieveList.innerHTML = '';
+
+    storedidea.forEach((idea, index) => {
+        if (idea[2] === type) {
+            const ideaItem = document.createElement('li');
+            ideaItem.className = 'idea-item';
+            ideaItem.innerHTML = `
+                <p><b>${idea[0]}</b> <sub>${idea[2]}</sub></p>
+                <p>${idea[1]}</p>
+                <hr>
+                <p>
+                    ${type === 'concern' ? `<button onclick="changeLabel(${index}, 'archieve')">Archive</button>` : `<button onclick="changeLabel(${index}, 'concern')">To Concern</button>`}
+                    <button onclick="editIdea(${index})">Edit</button>
+                    <button onclick="eraseIdea(${index})">Erase</button>
+                    <button onclick="defaultalert(${index})">Execute</button>
+                </p>
+            `;
+            if (type === 'concern') {
+                concernList.appendChild(ideaItem);
+            } else {
+                archieveList.appendChild(ideaItem);
+            }
+        }
+    });
+    document.getElementById('type_storedidea').innerHTML = type; // :v
+}
+
+
+function changeLabel(index, newLabel) {
+    storedidea[index][2] = newLabel;
+    refreshDisplay_Idea();
+}
+
+function editIdea(index) {
+    const newData = prompt('Enter new idea data', storedidea[index][0]);
+    const newCommentary = prompt('Enter new commentary', storedidea[index][1]);
+    if (newData !== null && newCommentary !== null) {
+        storedidea[index][0] = newData;
+        storedidea[index][1] = newCommentary;
+        refreshDisplay_Idea();
+    }
+}
+
+function eraseIdea(index) {
+    storedidea.splice(index, 1);
+    refreshDisplay_Idea();
+}
+
+function defaultalert(index) {
+	alert('loading, sending to today plan (in DWM Fgate) the idea of \n\n\n' + storedidea[index][0]);
+	let event = " from ID M :  " + storedidea[index][2] + " - " + storedidea[index][0] + " - " + storedidea[index][1];
+
+	let now = new Date();
+	let dd = now.getDate().toString().padStart(2, '0');
+	let month = (now.getMonth() + 1).toString().padStart(2, '0');
+	let yy = '20'+now.getFullYear().toString().substr(-2);
+	const date = `${yy}-${month}-${dd}`;
+
+	// Add new data to fgate_events in local storage
+	let fgate_events = JSON.parse(localStorage.getItem('fgate_events')) || [];
+	 fgate_events.push([date, event])
+	 
+	 console.log(date+'\n and \n '+yy)
+	localStorage.setItem('fgate_events', JSON.stringify(fgate_events));
+	
+	eraseIdea(index); refreshDisplay_Idea();
+	alert('successfully adding to DWM today, data erased here');
+}
+
+
+</script>
+</body>
+</html>
