@@ -1,9 +1,10 @@
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 	body{ color: white; background: black; }
 	
 	#activeToday{
-		list-style-image: url("file:///C:/Users/muham/Downloads/output-onlinepngtools.png");
+		list-style-image: url("output-onlinepngtools.png");
 		height: 50%; overflow-y: scroll;
 		padding: 10px; color : black; 
 		background-repeat: no-repeat;background-size: 100%;
@@ -148,7 +149,35 @@
 		.current { color: black; }
 		.upcoming { color: navy; }
 	</style>
-	
+<style>
+.amaterasu {position: relative;
+width: 20%; /* Initial width */
+animation: moveAndScale 15s linear infinite;
+    }
+
+    @keyframes moveAndScale {
+0%, 100% {
+    left: 0;
+    transform: scale(0.7); /* Initial scale */
+}
+       20% {
+    left: calc(0% + 25px);
+    transform: scale(0.5); /* Initial scale */
+}
+40% {
+    left: calc(0% - 50px); /* Moves to the right */
+    transform: scale(1.2); /* Scales up */
+}
+60% {
+    left: calc(0% + 50px); /* Moves to the right */
+    transform: scale(1); /* Scales up */
+}
+80% {
+    left: calc(0% - 25px); /* Moves to the right */
+    transform: scale(0.5); /* Scales up */
+}
+    }
+</style>
 	
 <body>
 
@@ -272,7 +301,7 @@ current arc daily theme :
 <center><i>Missed out!?</i></center><div id="missedOut"></div><hr>
 <center><b>Finished!!!</b></center><div id="Finished"></div><hr>
 
-<center>Keep the Vibes<br><img src="https://media.giphy.com/media/3o85xpJDoAcPrVIeOs/giphy.gif" style="width: 20%"><br>---Finn---</center>
+<center>Keep the Vibes<br><br><<br><br><img src="https://media.giphy.com/media/3o85xpJDoAcPrVIeOs/giphy.gif" class="amaterasu"><br><br><<br><br>---Finn---</center>
 
 <script type='text/javascript'>
 function categorizeAndDisplayfgate_events(fgate_events) {
@@ -645,28 +674,28 @@ function overwriteByExternalData() {
 
 
 // Function to download localStorage data as a text file
-function downloadLocalStorage() {
-  let data = JSON.parse(localStorage.getItem('fgate_events'));
-  if (data) {
+
+
+
+function downloadLocalStorage(){
+  //synch confirm to see what will be downloaded by seeing in text area
+   synch_fgate_events(); 
+   document.getElementById('src_valx').value = JSON.stringify(fgate_events);
+  //prepare the file name
     let now = new Date();
     let formattedDate = `${now.getDate()}-${now.getMonth() + 1}-${now.getFullYear()}_${now.getHours()}:${now.getMinutes()}`;
     let filename = `extdata_${formattedDate}.txt`;
-    let content = data.map(entry => `${entry[0]}: ${entry[1]}`).join('\n');
-    let blob = new Blob([content], { type: 'text/plain' });
-    let url = URL.createObjectURL(blob);
-
-    // Create a link and click to trigger download
-    let a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  } else {
-    alert("No data to download.");
-  }
+  //fill the file content & download it 
+    const data = document.getElementById('src_valx').value;
+    const blob = new Blob([data], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = window.URL.createObjectURL(blob);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
+
 
 
 
@@ -701,13 +730,13 @@ NOW Acuan data nya user last save , last seen may not concern & las seen no care
 	
 	
 */	
-        document.addEventListener('DOMContentLoaded', function() {
-            const items = document.querySelectorAll('#checklist li');
-            items.forEach(item => {
-                item.addEventListener('click', function() {
-                    this.classList.toggle('checked');
-                });
-            });
-        });
+document.addEventListener('DOMContentLoaded', function() {
+    const items = document.querySelectorAll('#checklist li');
+    items.forEach(item => {
+item.addEventListener('click', function() {
+    this.classList.toggle('checked');
+});
+    });
+});
 	</script>
 </body>
