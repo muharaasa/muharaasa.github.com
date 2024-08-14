@@ -1,0 +1,246 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word Count and Analyze</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px; 
+  }
+  textarea {
+    font-family: Arial, sans-serif;
+    margin: 20px; padding: 20px;
+    background: white; color: navy;
+    width: 70%;
+  }
+  #results {
+    margin-top: 20px;
+  }
+  li {
+    margin-bottom: 5px;
+  }
+  .popup {
+    display:none;
+    position:fixed;
+    top:20%;
+    left:50%;
+    transform:translate(-50%, -20%);
+    background:white;
+    border:1px solid #ccc;
+    padding:20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    max-height: 70%;
+    overflow: auto;
+    width: 60%;
+  }
+  #popupContent {
+    max-height: 80%;
+    overflow-y: scroll;
+  }
+  #filterWordsContainer {
+    height: 100px;
+    overflow: scroll;
+  }
+  #filterWordsContainer ul li {
+    margin-left: 20px; padding: 10px;
+    border: 0px solid black;
+    border-left : 1px solid blue;
+  }
+  .highlight {
+    background-color: yellow; /* Highlight color */
+    font-weight: bold; /* Optional: makes the highlighted word bold */
+}
+
+</style>
+</head>
+<body>
+
+<textarea id="textInput" rows="10" cols="50" placeholder="Masukkan teks di sini..."></textarea><br>
+<button onclick="wordCount()">Word Count It!</button><br>
+
+<div id="filterWordsContainer">
+  <strong>Kata imbuhan yang difilter:</strong>
+  <ul id="filterWordsList"></ul>
+</div>
+
+<textarea id="filterInputArray" rows="4" cols="50" placeholder='Tambah kata imbuhan dalam bentuk array, misalnya: ["kata1", "kata2"]'></textarea><br>
+<button onclick="updateFilter()">Update Data Filter</button><br>
+
+<textarea id="yellowlabel" rows="2" cols="50" placeholder="Yellow label array"></textarea><br>
+<textarea id="redlabel" rows="2" cols="50" placeholder="Red label array"></textarea><br>
+
+
+<ul id="results"></ul>
+
+<div id="popup" class="popup">
+  <button onclick="closePopup()">Close</button>
+  <div id="popupContent"></div>
+</div>
+
+<script>
+  let filters = [];
+  let yellowLabels = [];
+  let redLabels = [];
+
+  function updateFilter() {
+    const filterInputArray = document.getElementById('filterInputArray').value;
+    try {
+      const newFilters = JSON.parse(filterInputArray);
+      if (Array.isArray(newFilters)) {
+        filters = newFilters.map(word => word.toLowerCase());
+        updateFilterWordsList();
+        alert('Data filter telah diperbarui.');
+      } else {
+        alert('Masukkan data dalam bentuk array yang benar.');
+      }
+    } catch (error) {
+      alert('Format JSON tidak valid.');
+    }
+  }
+
+function updateFilterWordsList() {
+    const filterWordsList = document.getElementById('filterWordsList');
+    filterWordsList.innerHTML = '';
+
+    // Sort the filters array in ascending order
+    const sortedFilters = filters.slice().sort((a, b) => a.localeCompare(b));
+
+    sortedFilters.forEach(word => {
+      const li = document.createElement('li');
+      li.textContent = word;
+      filterWordsList.appendChild(li);
+    });
+}
+
+
+  function wordCount() {
+    const text = document.getElementById('textInput').value;
+    const words = text.toLowerCase().match(/\b\w+\b/g);
+    const wordCount = {};
+
+    words.forEach(word => {
+      if (!filters.includes(word)) {
+        wordCount[word] = (wordCount[word] || 0) + 1;
+      }
+    });
+
+    const sortedWords = Object.keys(wordCount).sort((a, b) => wordCount[b] - wordCount[a]);
+
+    const results = document.getElementById('results');
+    results.innerHTML = '';
+
+    sortedWords.forEach((word, index) => {
+      const li = document.createElement('li');
+      li.innerHTML = `${index + 1}. ${word}: ${wordCount[word]} 
+        <button onclick="labelWord(this, '${word}', 'yellow')">Yellow Label</button>
+        <button onclick="labelWord(this, '${word}', 'red')">Red Label</button>
+        <button onclick="analyze('${word}')">Analyze</button>
+        <button onclick="wordDetailAnalyze('${word}')">Word Detail Analyze</button>`;
+      results.appendChild(li);
+    });
+  }
+
+  function labelWord(button, word, color) {
+    const li = button.parentElement;
+    
+    const isYellow = yellowLabels.includes(word);
+    const isRed = redLabels.includes(word);
+
+    if (color === 'yellow') {
+      if (isYellow) {
+        // Undo yellow label
+        yellowLabels = yellowLabels.filter(w => w !== word);
+        document.getElementById('yellowlabel').value = JSON.stringify(yellowLabels);
+        li.style.backgroundColor = isRed ? 'red' : ''; // Red or default
+      } else if (isRed) {
+        // Orange label (yellow + red)
+        yellowLabels.push(word);
+        document.getElementById('yellowlabel').value = JSON.stringify(yellowLabels);
+        li.style.backgroundColor = 'orange';
+      } else {
+        // Apply yellow label
+        yellowLabels.push(word);
+        document.getElementById('yellowlabel').value = JSON.stringify(yellowLabels);
+        li.style.backgroundColor = 'yellow';
+      }
+    } else if (color === 'red') {
+      if (isRed) {
+        // Undo red label
+        redLabels = redLabels.filter(w => w !== word);
+        document.getElementById('redlabel').value = JSON.stringify(redLabels);
+        li.style.backgroundColor = isYellow ? 'yellow' : ''; // Yellow or default
+      } else if (isYellow) {
+        // Orange label (yellow + red)
+        redLabels.push(word);
+        document.getElementById('redlabel').value = JSON.stringify(redLabels);
+        li.style.backgroundColor = 'orange';
+      } else {
+        // Apply red label
+        redLabels.push(word);
+        document.getElementById('redlabel').value = JSON.stringify(redLabels);
+        li.style.backgroundColor = 'red';
+      }
+    }
+  }
+
+function analyze(word) {
+    const text = document.getElementById('textInput').value;
+    const sentences = text.match(/[^.!?]+[.!?]/g);
+
+    // Create a regular expression to match the exact word with word boundaries
+    const wordRegex = new RegExp(`\\b(${word})\\b`, 'gi');
+
+    // Function to highlight the target word in a sentence
+    const highlightWord = (sentence) => {
+        return sentence.replace(wordRegex, '<span class="highlight">$1</span>');
+    };
+
+    // Filter sentences that contain the exact word and highlight the target word
+    const relevantSentences = sentences.filter(sentence => wordRegex.test(sentence))
+                                        .map(highlightWord);
+
+    const popupContent = document.getElementById('popupContent');
+    popupContent.innerHTML = relevantSentences.map(sentence => `<p>${sentence}</p>`).join('');
+
+    document.getElementById('popup').style.display = 'block';
+}
+
+
+
+  function wordDetailAnalyze(word) {
+    const text = document.getElementById('textInput').value;
+    const sentences = text.match(/[^.!?]+[.!?]/g);
+
+    const relevantSentences = sentences.filter(sentence => sentence.toLowerCase().includes(word)).join(' ');
+    const words = relevantSentences.toLowerCase().match(/\b\w+\b/g);
+    const wordCount = {};
+
+    words.forEach(w => {
+      if (!filters.includes(w)) {
+        wordCount[w] = (wordCount[w] || 0) + 1;
+      }
+    });
+
+    const sortedWords = Object.keys(wordCount).sort((a, b) => wordCount[b] - wordCount[a]);
+
+    const popupContent = document.getElementById('popupContent');
+    popupContent.innerHTML = `<h3>Detail for "${word}"</h3>`;
+    sortedWords.forEach((w, index) => {
+      popupContent.innerHTML += `<p>${index + 1}. ${w}: ${wordCount[w]}</p>`;
+    });
+
+    document.getElementById('popup').style.display = 'block';
+  }
+
+  function closePopup() {
+    document.getElementById('popup').style.display = 'none';
+  }
+</script>
+
+
+</body>
+</html>
