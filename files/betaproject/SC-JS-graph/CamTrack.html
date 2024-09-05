@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movement Tracker</title>
+    <style>
+        .snapshot-container {
+            display: inline-block;
+            margin: 10px;
+        }
+        .timestamp {
+            display: block;
+            text-align: center;
+            margin-top: 5px;
+        }
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #canvasoverlay{
+            height: 700px;
+            overflow:scroll;
+        }
+    </style>
+</head>
+<body>
+  Cam Track 
+    <video id="video" width="640" height="480" autoplay></video>
+    <button id="start">Start Tracking</button>
+    <button id="stop">Stop Tracking</button>
+    <label for="tolerance">Tolerance: </label>
+    <input type="range" id="tolerance" name="tolerance" min="0" max="100" value="30">
+    <span id="tolerance-value">30</span>
+<div id='canvasoverlay'>
+    <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+    <canvas id="overlay" width="640" height="480"></canvas>
+</div>
+
+<div id="snapshots"></div>
+    <script id="movement-tracker.js">
+let video = document.getElementById('video');
+let canvas = document.getElementById('canvas');
+let overlay = document.getElementById('overlay');
+let context = canvas.getContext('2d');
+let overlayContext = overlay.getContext('2d');
+let snapshots = document.getElementById('snapshots');
+let startButton = document.getElementById('start');
+let stopButton = document.getElementById('stop');
+let toleranceSlider = document.getElementById('tolerance');
+let toleranceValue = document.getElementById('tolerance-value');
+
+let tracking = false;
+let previousFrameData = null;
+let movementThreshold = parseInt(toleranceSlider.value, 10);
+
+navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+        video.srcObject = stream;
+        video.play();
+    })
+    .catch(err => {
+        console.error("Error accessing the camera: " + err);
+    });
+
+startButton.addEventListener('click', () => {
+    tracking = true;
+    trackMovement();
+});
+
+stopButton.addEventListener('click', () => {
+    tracking = false;
+});
+
+toleranceSlider.addEventListener('input', () => {
+    movementThreshold = parseInt(toleranceSlider.value, 10);
+    toleranceValue.textContent = movementThreshold;
+});
+
+function trackMovement() {
+    if (!tracking) return;
+
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    let currentFrameData = context.getImageData(0, 0, canvas.width, canvas.height);
+
+    if (previousFrameData) {
+        let movementPoints = calculateFrameDifference(previousFrameData.data, currentFrameData.data);
+        overlayContext.clearRect(0, 0, overlay.width, overlay.height);
+        if (movementPoints.length > 0) {
+            movementPoints.forEach(point => {
+                drawGreenSquare(point.x, point.y);
+            });
+            saveSnapshot(currentFrameData);
+            saveMovementAsSVG(movementPoints);
+        }
+    }
+
+    previousFrameData = currentFrameData;
+    requestAnimationFrame(trackMovement);
+}
+
+function calculateFrameDifference(prev, curr) {
+    let movementPoints = [];
+    for (let i = 0; i < prev.length; i += 4) {
+        let rDiff = Math.abs(prev[i] - curr[i]);
+        let gDiff = Math.abs(prev[i + 1] - curr[i + 1]);
+        let bDiff = Math.abs(prev[i + 2] - curr[i + 2]);
+        let totalDiff = rDiff + gDiff + bDiff;
+
+        if (totalDiff > movementThreshold) {
+            let x = (i / 4) % canvas.width;
+            let y = Math.floor((i / 4) / canvas.width);
+            movementPoints.push({ x, y });
+        }
+    }
+    return movementPoints;
+}
+
+function drawGreenSquare(x, y) {
+    overlayContext.strokeStyle = 'green';
+    overlayContext.lineWidth = 2;
+    overlayContext.strokeRect(x, y, 5, 5); // Draw a small square at each movement point
+}
+
+function saveSnapshot(frameData) {
+    let snapshotCanvas = document.createElement('canvas');
+    snapshotCanvas.width = canvas.width;
+    snapshotCanvas.height = canvas.height;
+    let snapshotContext = snapshotCanvas.getContext('2d');
+    snapshotContext.putImageData(frameData, 0, 0);
+
+    let timestamp = document.createElement('span');
+    timestamp.className = 'timestamp';
+    timestamp.textContent = getCurrentTimestamp();
+
+    let snapshotContainer = document.createElement('div');
+    snapshotContainer.className = 'snapshot-container';
+    snapshotContainer.appendChild(snapshotCanvas);
+    snapshotContainer.appendChild(timestamp);
+
+    snapshots.appendChild(snapshotContainer);
+}
+
+function saveMovementAsSVG(points) {
+    let svgNamespace = "http://www.w3.org/2000/svg";
+    let svg = document.createElementNS(svgNamespace, "svg");
+    svg.setAttribute("width", canvas.width);
+    svg.setAttribute("height", canvas.height);
+    svg.setAttribute("style", "border: 1px solid black;");
+
+    points.forEach(point => {
+        let circle = document.createElementNS(svgNamespace, "circle");
+        circle.setAttribute("cx", point.x);
+        circle.setAttribute("cy", point.y);
+        circle.setAttribute("r", 2);
+        circle.setAttribute("fill", "green");
+        svg.appendChild(circle);
+    });
+
+    let timestamp = document.createElement('span');
+    timestamp.className = 'timestamp';
+    timestamp.textContent = getCurrentTimestamp();
+
+    let svgContainer = document.createElement('div');
+    svgContainer.className = 'snapshot-container';
+    svgContainer.appendChild(svg);
+    svgContainer.appendChild(timestamp);
+
+    snapshots.appendChild(svgContainer);
+}
+
+function getCurrentTimestamp() {
+    let now = new Date();
+    let msmsms = now.getMilliseconds().toString().padStart(3, '0');
+    let ss = now.getSeconds().toString().padStart(2, '0');
+    let mm = now.getMinutes().toString().padStart(2, '0');
+    let hh = now.getHours().toString().padStart(2, '0');
+    let dd = now.getDate().toString().padStart(2, '0');
+    let month = (now.getMonth() + 1).toString().padStart(2, '0');
+    let yy = now.getFullYear().toString().substr(-2);
+
+    return `${msmsms}:${ss}:${mm}:${hh} - ${dd}/${month}/${yy}`;
+}
+    </script>
+</body>
+</html>
