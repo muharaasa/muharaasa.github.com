@@ -1,4 +1,7 @@
 
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,27 +23,50 @@
             top: 0;
             left: 0;
         }
-        #canvasoverlay{
-            height: 700px;
-            overflow:scroll;
+        #video-container {
+            position: relative;
+            width: 640px;
+            height: 480px;
+        }
+        #fileInput {
+            display: none;
         }
     </style>
 </head>
 <body>
-  Cam Track 
-    <video id="video" width="640" height="480" autoplay></video>
+    <div id="video-container">
+        <video id="video" width="640" height="480" autoplay></video>
+        <canvas id="overlay" width="640" height="480"></canvas>
+    </div>
+    
+    <button id="cameraButton">Use Camera</button>
+    <button id="fileButton">Upload Video</button>
+    <input type="file" id="fileInput" accept="video/*"> 
+    <i id="sourceType">camera</i>
+    
     <button id="start">Start Tracking</button>
     <button id="stop">Stop Tracking</button>
+    <label for="sensitivity">Spot Sensitivity (px): </label>
+    <input type="range" id="sensitivity" name="sensitivity" min="2" max="100" value="10">
+    <span id="sensitivity-value">10</span>
+
+    <label for="frequency">Spotting Frequency (sec): </label>
+    <input type="range" id="frequency" name="frequency" min="0.2" max="2" step="0.1" value="1">
+    <span id="frequency-value">1</span>
+
     <label for="tolerance">Tolerance: </label>
     <input type="range" id="tolerance" name="tolerance" min="0" max="100" value="30">
     <span id="tolerance-value">30</span>
-<div id='canvasoverlay'>
-    <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
-    <canvas id="overlay" width="640" height="480"></canvas>
-</div>
 
-<div id="snapshots"></div>
-    <script id="movement-tracker.js">
+    <label for="max-spots">Max Spot Percentage (%): </label>
+    <input type="range" id="max-spots" name="max-spots" min="0" max="100" value="50">
+    <span id="max-spots-value">50</span>
+
+
+    <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+    <div id="snapshots"></div>
+
+    <script name="movement-tracker.js">
 let video = document.getElementById('video');
 let canvas = document.getElementById('canvas');
 let overlay = document.getElementById('overlay');
@@ -51,19 +77,62 @@ let startButton = document.getElementById('start');
 let stopButton = document.getElementById('stop');
 let toleranceSlider = document.getElementById('tolerance');
 let toleranceValue = document.getElementById('tolerance-value');
+let cameraButton = document.getElementById('cameraButton');
+let fileButton = document.getElementById('fileButton');
+let fileInput = document.getElementById('fileInput');
 
 let tracking = false;
 let previousFrameData = null;
 let movementThreshold = parseInt(toleranceSlider.value, 10);
 
-navigator.mediaDevices.getUserMedia({ video: true })
-    .then(stream => {
-        video.srcObject = stream;
-        video.play();
-    })
-    .catch(err => {
-        console.error("Error accessing the camera: " + err);
-    });
+function startCamera() {
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            video.srcObject = stream;
+            video.play();
+            document.getElementById("sourceType").innerHTML = "camera";
+        })
+        .catch(err => {
+            console.error("Error accessing the camera: " + err);
+        });
+}
+
+function handleFile(file) {
+    stopCamera();  // Ensure camera is stopped before handling file
+    const url = URL.createObjectURL(file);
+    video.srcObject = null;  // Clear the camera stream
+    video.src = url;
+    video.play();
+    document.getElementById("sourceType").innerHTML = "fileInputVideo";
+}
+
+
+
+function stopCamera() {
+    if (video.srcObject) {
+        let stream = video.srcObject;
+        let tracks = stream.getTracks();
+        tracks.forEach(track => track.stop());
+        video.srcObject = null;
+    }
+}
+
+cameraButton.addEventListener('click', () => {
+    stopCamera();  // Ensure camera stops before switching
+    startCamera();
+});
+
+fileButton.addEventListener('click', () => {
+    stopCamera();  // Stop camera when switching to file input
+    fileInput.click();
+});
+
+fileInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        handleFile(file);
+    }
+});
 
 startButton.addEventListener('click', () => {
     tracking = true;
@@ -79,6 +148,125 @@ toleranceSlider.addEventListener('input', () => {
     toleranceValue.textContent = movementThreshold;
 });
 
+ let maxSpotsSlider = document.getElementById('max-spots');
+let maxSpotsValue = document.getElementById('max-spots-value');
+
+let maxSpotPercentage = parseInt(maxSpotsSlider.value, 10);
+
+// Update max spot percentage value
+maxSpotsSlider.addEventListener('input', () => {
+    maxSpotPercentage = parseInt(maxSpotsSlider.value, 10);
+    maxSpotsValue.textContent = maxSpotPercentage;
+});
+
+// Function to filter movement points based on max spot percentage
+function filterMovementPoints(movementPoints) {
+    let gridSize = 10; // Divide the canvas into a grid of 10x10 squares
+    let grid = {};
+
+    // Count the number of movement points in each grid cell
+    movementPoints.forEach(point => {
+        let gridX = Math.floor(point.x / gridSize);
+        let gridY = Math.floor(point.y / gridSize);
+        let key = `${gridX},${gridY}`;
+
+        if (!grid[key]) {
+            grid[key] = 0;
+        }
+        grid[key]++;
+    });
+
+    // Calculate total movement points
+    let totalPoints = movementPoints.length;
+
+    // Filter points based on max spot percentage
+    let filteredPoints = [];
+    for (let key in grid) {
+        let cellPercentage = (grid[key] / totalPoints) * 100;
+
+        // Only consider points in cells where the percentage exceeds the threshold
+        if (cellPercentage >= maxSpotPercentage) {
+            let [gridX, gridY] = key.split(',').map(Number);
+
+            // Add points in this grid cell to the filtered points array
+            movementPoints.forEach(point => {
+                if (Math.floor(point.x / gridSize) === gridX && Math.floor(point.y / gridSize) === gridY) {
+                    filteredPoints.push(point);
+                }
+            });
+        }
+    }
+
+    return filteredPoints;
+}
+
+// Modify trackMovement to use the filtered points
+function trackMovement() {
+    if (!tracking) return;
+
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    let currentFrameData = context.getImageData(0, 0, canvas.width, canvas.height);
+
+    if (previousFrameData) {
+        let movementPoints = calculateFrameDifference(previousFrameData.data, currentFrameData.data);
+
+        // Filter movement points based on max spot percentage
+        let filteredPoints = filterMovementPoints(movementPoints);
+
+        overlayContext.clearRect(0, 0, overlay.width, overlay.height);
+        if (filteredPoints.length > 0) {
+            filteredPoints.forEach(point => {
+                drawGreenSquare(point.x, point.y);
+            });
+            saveSnapshot(currentFrameData);
+            saveMovementAsSVG(filteredPoints);
+        }
+    }
+
+    previousFrameData = currentFrameData;
+
+    setTimeout(trackMovement, spottingFrequency * 1000);
+}
+
+
+function calculateFrameDifference(prev, curr) {
+    let movementPoints = [];
+    for (let i = 0; i < prev.length; i += 4) {
+        let rDiff = Math.abs(prev[i] - curr[i]);
+        let gDiff = Math.abs(prev[i + 1] - curr[i + 1]);
+        let bDiff = Math.abs(prev[i + 2] - curr[i + 2]);
+        let totalDiff = rDiff + gDiff + bDiff;
+
+        if (totalDiff > movementThreshold) {
+            let x = (i / 4) % canvas.width;
+            let y = Math.floor((i / 4) / canvas.width);
+            movementPoints.push({ x, y });
+        }
+    }
+    return movementPoints;
+}
+
+let sensitivitySlider = document.getElementById('sensitivity');
+let sensitivityValue = document.getElementById('sensitivity-value');
+let frequencySlider = document.getElementById('frequency');
+let frequencyValue = document.getElementById('frequency-value');
+
+let spotSensitivity = parseInt(sensitivitySlider.value, 10);
+let spottingFrequency = parseFloat(frequencySlider.value);
+
+// Update sensitivity value
+sensitivitySlider.addEventListener('input', () => {
+    spotSensitivity = parseInt(sensitivitySlider.value, 10);
+    sensitivityValue.textContent = spotSensitivity;
+});
+
+// Update frequency value
+frequencySlider.addEventListener('input', () => {
+    spottingFrequency = parseFloat(frequencySlider.value);
+    frequencyValue.textContent = spottingFrequency;
+});
+
+// Modified trackMovement function with spotting frequency
 function trackMovement() {
     if (!tracking) return;
 
@@ -98,31 +286,18 @@ function trackMovement() {
     }
 
     previousFrameData = currentFrameData;
-    requestAnimationFrame(trackMovement);
+
+    // Control the frequency of movement tracking
+    setTimeout(trackMovement, spottingFrequency * 1000);
 }
 
-function calculateFrameDifference(prev, curr) {
-    let movementPoints = [];
-    for (let i = 0; i < prev.length; i += 4) {
-        let rDiff = Math.abs(prev[i] - curr[i]);
-        let gDiff = Math.abs(prev[i + 1] - curr[i + 1]);
-        let bDiff = Math.abs(prev[i + 2] - curr[i + 2]);
-        let totalDiff = rDiff + gDiff + bDiff;
-
-        if (totalDiff > movementThreshold) {
-            let x = (i / 4) % canvas.width;
-            let y = Math.floor((i / 4) / canvas.width);
-            movementPoints.push({ x, y });
-        }
-    }
-    return movementPoints;
-}
-
+// Modified drawGreenSquare function to use spotSensitivity
 function drawGreenSquare(x, y) {
     overlayContext.strokeStyle = 'green';
     overlayContext.lineWidth = 2;
-    overlayContext.strokeRect(x, y, 5, 5); // Draw a small square at each movement point
+    overlayContext.strokeRect(x, y, spotSensitivity, spotSensitivity); // Use spotSensitivity for the square size
 }
+
 
 function saveSnapshot(frameData) {
     let snapshotCanvas = document.createElement('canvas');
@@ -172,17 +347,29 @@ function saveMovementAsSVG(points) {
 }
 
 function getCurrentTimestamp() {
-    let now = new Date();
-    let msmsms = now.getMilliseconds().toString().padStart(3, '0');
-    let ss = now.getSeconds().toString().padStart(2, '0');
-    let mm = now.getMinutes().toString().padStart(2, '0');
-    let hh = now.getHours().toString().padStart(2, '0');
-    let dd = now.getDate().toString().padStart(2, '0');
-    let month = (now.getMonth() + 1).toString().padStart(2, '0');
-    let yy = now.getFullYear().toString().substr(-2);
-
-    return `${msmsms}:${ss}:${mm}:${hh} - ${dd}/${month}/${yy}`;
+    let sourceType = document.getElementById("sourceType").innerHTML;
+    if (sourceType === "fileInputVideo") {
+        let currentTime = video.currentTime;
+        let ss = Math.floor(currentTime % 60).toString().padStart(2, '0');
+        let mm = Math.floor((currentTime / 60) % 60).toString().padStart(2, '0');
+        let hh = Math.floor(currentTime / 3600).toString().padStart(2, '0');
+        return `${hh}:${mm}:${ss}`;
+    } else {
+        // Camera timestamps use real-time clock
+        let now = new Date();
+        let msmsms = now.getMilliseconds().toString().padStart(3, '0');
+        let ss = now.getSeconds().toString().padStart(2, '0');
+        let mm = now.getMinutes().toString().padStart(2, '0');
+        let hh = now.getHours().toString().padStart(2, '0');
+        let dd = now.getDate().toString().padStart(2, '0');
+        let month = (now.getMonth() + 1).toString().padStart(2, '0');
+        let yy = now.getFullYear();
+        return `${dd}/${month}/${yy} ${hh}:${mm}:${ss}.${msmsms}`;
+    }
 }
+
+
+
     </script>
 </body>
 </html>
