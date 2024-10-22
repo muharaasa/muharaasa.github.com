@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,6 +60,14 @@
 </style>
 </head>
 <body>
+Now separatorOption is = <u id="separatorOption"></u>
+<label for="sentenceSeparator">Choose Sentence Separator:</label>
+<select id="sentenceSeparator">
+  <option value="punctuation">By punctuation marks</option>
+  <option value="line">By lines only</option>
+  <option value="both">By punctuation and lines</option>
+</select>
+
 <textarea id="textInput" rows="10" cols="50" placeholder="Masukkan teks di sini..."></textarea><br>
 <button onclick="wordCount()">Word Count It!</button>
 <button id="sortToggle" onclick="toggleSort()">Sort by Sentence Rank</button><br>
@@ -81,7 +90,8 @@
   <div id="popupContent"></div>
 </div>
 
-<script>let filters = [];
+<script>
+let filters = [];
 let yellowLabels = [];
 let redLabels = [];
 let sortBy = 'word'; // Default sorting by word count
@@ -113,9 +123,59 @@ function updateFilterWordsList() {
   });
 }
 
+function getSentences(text) {
+  const separatorOption = document.getElementById('sentenceSeparator').value;
+
+  let sentences;
+  
+  if (separatorOption === 'punctuation') {
+    // Split by punctuation marks like '.', '!', '?'
+    sentences = text.match(/[^.!?]+[.!?]/g) || [];
+  } else if (separatorOption === 'line') {
+    // Split by new lines
+    sentences = text.split(/\n+/) || [];
+  } else if (separatorOption === 'both') {
+    // First split by punctuation, then further split by lines
+    //sentences = text.match(/[^.!?]+[.!?]/g) || [];
+    //sentences = sentences.flatMap(sentence => sentence.split(/\n+/));
+	let bothResults = bothSeparation(inputText);
+
+
+function bothSeparation(text) {
+	let lineResults = text.split('\n');  // Split by line breaks
+	let punctuationResults = line.split(/[.!?]+/);  // Split by punctuation marks
+      // Step 1: Lines-separation
+    let combinedResults = new Set();  // Using a set to avoid duplicates
+    // Step 2: Iterate over each line result and apply punctuation-split
+    lineResults.forEach(line => {
+        
+        // Store both the original line and the punctuation-split results
+        combinedResults.add(line.trim());  // Add the full line
+        punctuationResults.forEach(punctuatedSentence => {
+            if (punctuatedSentence.trim().length > 0) {
+                combinedResults.add(punctuatedSentence.trim());  // Add each split sentence
+            }
+        });
+    });
+
+    // Step 3: Return a unique set of results
+    return Array.from(combinedResults);
+}
+
+
+
+	
+	
+  }
+   document.getElementById('separatorOption').innerHTML = separatorOption;
+  return sentences;
+}
+
 function wordCount() {
   const text = document.getElementById('textInput').value;
-  const sentences = text.match(/[^.!?]+[.!?]/g) || [];
+  
+  // Get sentences based on selected separator option
+  const sentences = getSentences(text); ////const sentences = text.match(/[^.!?]+[.!?]/g) || [];
   const words = text.toLowerCase().match(/\b\w+\b/g) || [];
 
   const wordCount = {};
@@ -183,7 +243,7 @@ function closePopup() {
 
   function analyze(word) {
     const text = document.getElementById('textInput').value;
-    const sentences = text.match(/[^.!?]+[.!?]/g);
+    const sentences = getSentences(text); ///const sentences = text.match(/[^.!?]+[.!?]/g);
     const wordRegex = new RegExp(`\\b(${word})\\b`, 'gi');
     const highlightWord = (sentence) => {
         return sentence.replace(wordRegex, '<span class="highlight">$1</span>');
@@ -197,7 +257,7 @@ function closePopup() {
 
   function wordDetailAnalyze(word) {
     const text = document.getElementById('textInput').value;
-    const sentences = text.match(/[^.!?]+[.!?]/g);
+    const sentences = getSentences(text); ///const sentences = text.match(/[^.!?]+[.!?]/g);
     const relevantSentences = sentences.filter(sentence => sentence.toLowerCase().includes(word)).join(' ');
     const words = relevantSentences.toLowerCase().match(/\b\w+\b/g);
     const wordCount = {};
@@ -285,49 +345,85 @@ function closePopup() {
   }
   
   // Add any additional searchwords
+  
   function searchWords() {
     const input = document.getElementById('formula_wordtosearch').value;
     const includeWords = [];
     const excludeWords = [];
+
+    // Parse input for include (+) and exclude (-) words
     input.split('+').forEach(part => {
-      if (part.includes('-')) {
-        const [include, ...exclude] = part.split('-');
-        includeWords.push(include.toLowerCase());
-        excludeWords.push(...exclude.map(word => word.toLowerCase()));
-      } else {
-        includeWords.push(part.toLowerCase());
-      }
+        if (part.includes('-')) {
+            const [include, ...exclude] = part.split('-');
+            includeWords.push(include.toLowerCase());
+            excludeWords.push(...exclude.map(word => word.toLowerCase()));
+        } else {
+            includeWords.push(part.toLowerCase());
+        }
     });
+
     const text = document.getElementById('textInput').value;
-    const sentences = text.match(/[^.!?]+[.!?]/g);
+    const sentences = getSentences(text); // Get sentences based on separator selection
     const filteredSentences = sentences.filter(sentence => {
-      const lowerSentence = sentence.toLowerCase();
-      return includeWords.every(word => lowerSentence.includes(word)) && 
-             !excludeWords.some(word => lowerSentence.includes(word));
+        const lowerSentence = sentence.toLowerCase();
+        // Check if all includeWords exist in the sentence
+        const hasAllIncluded = includeWords.every(word => lowerSentence.includes(word));
+        // Check if none of the excludeWords exist in the sentence
+        const hasExcluded = excludeWords.some(word => lowerSentence.includes(word));
+        // Return true if sentence has all includeWords and none of the excludeWords
+        return hasAllIncluded && !hasExcluded;
     });
+
+    // Treat the filtered sentences through word count and rank them
+    processFilteredSentences(filteredSentences);
+}
+
+function processFilteredSentences(sentences) {
+    const words = sentences.join(' ').toLowerCase().match(/\b\w+\b/g) || [];
+
+    const wordCount = {};
+    const sentenceCount = {};
+
+    sentences.forEach(sentence => {
+        const sentenceWords = sentence.toLowerCase().match(/\b\w+\b/g) || [];
+        sentenceWords.forEach(word => {
+            if (!filters.includes(word)) {
+                wordCount[word] = (wordCount[word] || 0) + 1;
+                sentenceCount[word] = (sentenceCount[word] || new Set()).add(sentence);
+            }
+        });
+    });
+
+    const wordRank = Object.keys(wordCount).map(word => {
+        const relatedSentences = sentenceCount[word].size;
+        return {
+            word: word,
+            count: wordCount[word],
+            sentenceCount: relatedSentences,
+            ratio: (wordCount[word] / relatedSentences).toFixed(2)
+        };
+    });
+
+    wordRank.sort((a, b) => {
+        if (sortBy === 'word') return b.count - a.count;
+        if (sortBy === 'sentence') return b.sentenceCount - a.sentenceCount;
+        if (sortBy === 'ratio') return b.ratio - a.ratio;
+    });
+
     const results = document.getElementById('results');
     results.innerHTML = '';
-    
-    const wordCount = {};
-    filteredSentences.forEach(sentence => {
-      const words = sentence.toLowerCase().match(/\b\w+\b/g);
-      words.forEach(word => {
-        if (!filters.includes(word)) {
-          wordCount[word] = (wordCount[word] || 0) + 1;
-        }
-      });
+
+    wordRank.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `${index + 1}. ${item.word}: <sub> ${item.count} words, ${item.sentenceCount} sentences, Ratio: ${item.ratio} </sub>
+          <button onclick="labelWord(this, '${item.word}', 'yellow')">Yellow Label</button>
+          <button onclick="labelWord(this, '${item.word}', 'red')">Red Label</button>
+          <button onclick="analyze('${item.word}')">Analyze</button>
+          <button onclick="wordDetailAnalyze('${item.word}')">Word Detail Analyze</button>`;
+        results.appendChild(li);
     });
-    const sortedWords = Object.keys(wordCount).sort((a, b) => wordCount[b] - wordCount[a]);
-    sortedWords.forEach((word, index) => {
-      const li = document.createElement('li');
-      li.innerHTML = `${index + 1}. ${word}: ${wordCount[word]} 
-        <button onclick="analyze('${word}')">Analyze</button>
-        <button onclick="wordDetailAnalyze('${word}')">Word Detail Analyze</button>
-        <button onclick="labelWord(this, '${word}', 'yellow')">Yellow Label</button>
-        <button onclick="labelWord(this, '${word}', 'red')">Red Label</button>`;
-      results.appendChild(li);
-    });
-  }
+}
+///// we+will-down ok, begitupun kalau spesifik cari we will+down etc..., tapi lain cerita kalau ujungnya we+will- atau we+will+ (nge- atau + semuanya)
 </script>
 
 
