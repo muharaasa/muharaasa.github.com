@@ -136,36 +136,8 @@ function getSentences(text) {
     sentences = text.split(/\n+/) || [];
   } else if (separatorOption === 'both') {
     // First split by punctuation, then further split by lines
-    //sentences = text.match(/[^.!?]+[.!?]/g) || [];
-    //sentences = sentences.flatMap(sentence => sentence.split(/\n+/));
-	let bothResults = bothSeparation(inputText);
-
-
-function bothSeparation(text) {
-	let lineResults = text.split('\n');  // Split by line breaks
-	let punctuationResults = line.split(/[.!?]+/);  // Split by punctuation marks
-      // Step 1: Lines-separation
-    let combinedResults = new Set();  // Using a set to avoid duplicates
-    // Step 2: Iterate over each line result and apply punctuation-split
-    lineResults.forEach(line => {
-        
-        // Store both the original line and the punctuation-split results
-        combinedResults.add(line.trim());  // Add the full line
-        punctuationResults.forEach(punctuatedSentence => {
-            if (punctuatedSentence.trim().length > 0) {
-                combinedResults.add(punctuatedSentence.trim());  // Add each split sentence
-            }
-        });
-    });
-
-    // Step 3: Return a unique set of results
-    return Array.from(combinedResults);
-}
-
-
-
-	
-	
+    sentences = text.match(/[^.!?]+[.!?]/g) || [];
+    sentences = sentences.flatMap(sentence => sentence.split(/\n+/));
   }
    document.getElementById('separatorOption').innerHTML = separatorOption;
   return sentences;
