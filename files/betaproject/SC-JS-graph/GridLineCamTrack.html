@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Grid Overlay</title>
+  <style>
+    /* Container and Video */
+    #container {
+      position: relative;
+      display: inline-block;
+    }
+
+    video {
+      width: 100%;
+      display: block;
+    }
+
+    /* 16x16 Grid Overlay */
+    #grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: grid;
+      grid-template-columns: repeat(16, 1fr);
+      grid-template-rows: repeat(16, 1fr);
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .grid-cell {
+      border: 1px solid gray;
+      box-sizing: border-box;
+    }
+
+    /* Active Cell */
+    .active {
+      background-color: red;
+      opacity: 0.4;
+    }
+  </style>
+</head>
+<body>
+
+<input type="file" id="fileInput" accept="video/*">
+<label for="intervalSelect">Select Frame Comparison Interval:</label>
+<select id="intervalSelect">
+  <option value="100">0.1 sec</option>
+  <option value="300" selected>0.3 sec</option>
+  <option value="500">0.5 sec</option>
+  <option value="1000">1 sec</option>
+  <option value="2000">2 sec</option>
+  <option value="3000">3 sec</option>
+</select>
+
+<label for="toleranceSlider">Set Tolerance Level:</label>
+<input type="range" id="toleranceSlider" min="0" max="255" value="30" step="1">
+<span id="toleranceValue">30</span>
+
+<div id="container">
+  <video id="video" controls autoplay loop crossorigin="anonymous">
+    Your browser does not support the video tag.
+  </video>
+  <div id="grid"></div>
+</div>
+
+<script>
+  const video = document.getElementById("video");
+  const grid = document.getElementById("grid");
+  const fileInput = document.getElementById("fileInput");
+  const intervalSelect = document.getElementById("intervalSelect");
+  const toleranceSlider = document.getElementById("toleranceSlider");
+  const toleranceValueDisplay = document.getElementById("toleranceValue");
+  
+  let interval = parseInt(intervalSelect.value); // Default interval is 300ms (0.3 sec)
+  let tolerance = parseInt(toleranceSlider.value); // Default tolerance value
+  const rows = 16;
+  const cols = 16;
+
+  // Create a canvas for frame comparisons
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d");
+
+  // Handle file input change
+  fileInput.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      video.src = url;
+      video.load();
+    }
+  });
+
+  // Update the interval when the selection changes
+  intervalSelect.addEventListener("change", (event) => {
+    interval = parseInt(event.target.value);
+  });
+
+  // Update the tolerance value when the slider changes
+  toleranceSlider.addEventListener("input", (event) => {
+    tolerance = parseInt(event.target.value);
+    toleranceValueDisplay.textContent = tolerance; // Display current tolerance value
+  });
+
+  // Initialize grid cells and previous frame data after video metadata loads
+  video.addEventListener('loadedmetadata', () => {
+    // Set canvas dimensions to match the video
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    // Calculate cell size
+    const cellWidth = video.videoWidth / cols;
+    const cellHeight = video.videoHeight / rows;
+
+    // Set up grid cells
+    let cells = [];
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        const cell = document.createElement("div");
+        cell.classList.add("grid-cell");
+        cell.dataset.x = x;
+        cell.dataset.y = y;
+        grid.appendChild(cell);
+        cells.push({
+          element: cell,
+          previousFrame: null
+        });
+      }
+    }
+
+    // Start interval check after metadata loads
+    setInterval(() => {
+      if (video.readyState >= 2) { // Ensure video is ready
+        // Draw the current video frame onto the canvas
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        cells.forEach(cell => {
+          const x = cell.element.dataset.x * cellWidth;
+          const y = cell.element.dataset.y * cellHeight;
+
+          // Get the current frame data for the cell area
+          const frameData = context.getImageData(x, y, cellWidth, cellHeight).data;
+
+          // Apply Gaussian Blur (simplified for frame data comparison)
+          const blurredFrameData = applyGaussianBlur(frameData, cellWidth, cellHeight);
+
+          // Compare to the previous frame data
+          let isDifferent = cell.previousFrame &&
+            !isSignificantlyDifferent(blurredFrameData, cell.previousFrame, tolerance);
+
+          if (isDifferent) {
+            // Mark cell as active if there's a significant difference
+            cell.element.classList.add("active");
+          } else {
+            cell.element.classList.remove("active");
+          }
+
+          // Update previous frame record
+          cell.previousFrame = blurredFrameData;
+        });
+      }
+    }, interval);
+  });
+
+  // Function to apply a simple Gaussian Blur effect on the frame data
+  function applyGaussianBlur(frameData, width, height) {
+    // A simple placeholder for Gaussian blur
+    // In a real implementation, you would apply a proper Gaussian filter
+    const blurredData = new Uint8ClampedArray(frameData.length);
+    for (let i = 0; i < frameData.length; i++) {
+      blurredData[i] = frameData[i]; // Currently, just returning original data
+    }
+    return blurredData;
+  }
+
+  // Function to check if two frames are significantly different based on tolerance
+  function isSignificantlyDifferent(currentFrame, previousFrame, tolerance) {
+    for (let i = 0; i < currentFrame.length; i += 4) {
+      const rDiff = Math.abs(currentFrame[i] - previousFrame[i]);
+      const gDiff = Math.abs(currentFrame[i + 1] - previousFrame[i + 1]);
+      const bDiff = Math.abs(currentFrame[i + 2] - previousFrame[i + 2]);
+      
+      // Check if any color difference exceeds the tolerance
+      if (rDiff > tolerance || gDiff > tolerance || bDiff > tolerance) {
+        return true;
+      }
+    }
+    return false;
+  }
+</script>
+
+</body>
+</html>
