@@ -1,0 +1,566 @@
+
+<style>
+/* General styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 20px;
+    color: #333;
+}
+
+#video-file{ 
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #77c607;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.container {
+    text-align: center;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+input[type="range"] {
+    width: 300px;
+}
+
+h1 {
+    font-size: 24px;
+    color: #444;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Video container and player */
+#video-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#video-player {
+    max-width: 100%;
+    height: auto;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Controls styling */
+#controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+#controls button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#controls button:hover {
+    background-color: #0056b3;
+}
+
+#controls button:active {
+    background-color: #004080;
+}
+
+#info_playbackRate {
+    font-weight: bold;
+    color: #007bff;
+}
+
+/* Rate control buttons */
+div[style] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+#increase-rate, #decrease-rate {
+    padding: 8px 12px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#increase-rate:hover, #decrease-rate:hover {
+    background-color: #218838;
+}
+
+#increase-rate:active, #decrease-rate:active {
+    background-color: #1e7e34;
+}
+
+/* Annotation section */
+#annotation-text {
+    width: 100%;
+    height: 80px;
+    padding: 10px;
+    margin-top: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+#annotation-text:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
+#mark-time, #submit-annotation, #automark-submit-annotation {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #ffc107;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+#mark-time:hover, #submit-annotation:hover, #automark-submit-annotation:hover {
+    background-color: #e0a800;
+}
+
+#mark-time:active, #submit-annotation:active, #automark-submit-annotation:active {
+    transform: scale(0.95);
+}
+
+/* Screenshot button */
+#take-screenshot {
+    padding: 8px 12px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#take-screenshot:hover {
+    background-color: #c82333;
+}
+
+#take-screenshot:active {
+    transform: scale(0.95);
+}
+
+/* Annotations list */
+#annotations ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+#annotations ul li {
+    background-color: #f8f9fa;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-left: 4px solid #007bff;
+    border-radius: 3px;
+    transition: transform 0.2s ease;
+}
+
+#annotations ul li:hover {
+    transform: scale(1.02);
+    background-color: #e9ecef;
+}
+li .controls {
+    margin-top: 10px;
+}
+
+li .controls button {
+    margin-right: 10px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+li .controls button.edit-btn {
+    background-color: #ffc107;
+}
+
+li .controls button.delete-btn {
+    background-color: #dc3545;
+}
+
+li .controls button:hover {
+    opacity: 0.8;
+}
+
+/* Save and Load buttons */
+#save-load-buttons {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#save-data, #load-data {
+    padding: 10px 20px;
+    margin: 5px;
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#save-data:hover, #load-data:hover {
+    background-color: #138496;
+}
+
+#save-data:active, #load-data:active {
+    transform: scale(0.95);
+}
+
+</style>
+<h1>Video Annotation Tool</h1>
+
+<div>
+    <input type="file" id="video-file" accept="video/*">
+</div>
+
+<div id="video-container">
+    <video id="video-player" controls></video>
+</div>
+
+<div id="controls">
+    <button id="prev-5-sec">-5 sec</button>
+    <button id="play-pause">Play/Pause</button>
+    <button id="next-5-sec">+5 sec</button>
+</div>
+    <div style="margin-top: 10px;">
+         Rate : <u id="info_playbackRate"></u> | 
+        <button id="increase-rate">Increase Speed</button>
+        <button id="decrease-rate">Decrease Speed</button>
+    </div>
+<div>
+     
+<div class="container">
+    <label for="ImgSizerangeSlider">Select img width :</label> 
+    <input type="range" id="ImgSizerangeSlider" min="100" max="1000" value="100"> 
+    <span id="sliderValue">100px</span> | 
+	<button id="take-screenshot">Take Screenshot</button><br />
+</div>
+    <textarea id="annotation-text" placeholder="Enter annotation here...">-#-</textarea>
+    <button id="mark-time">Tag<br><sub>Mark the Time (-1s)</sub></button>
+    <button id="submit-annotation">Submit Annotation at <br><sub> Time hold : <u id="info_timeHolded"></u> </sub></button> | 
+    <button id="automark-submit-annotation">auto mark <br><sub> submit Annotation at current time</sub></button> | 
+    <button id="erase-annotationsList">erase Annotation</button>
+</div>
+<div id="annotations">
+    <ul id="li-of-time-marked-word-annotation-and-ss"></ul>
+</div>
+
+<div id="save-load-buttons">
+    <button id="save-data">Save Data</button>
+    <button id="load-data">Load Data</button>
+</div>
+<script>
+const slidersize = document.getElementById('ImgSizerangeSlider');
+const sliderValueDisplay = document.getElementById('sliderValue');
+
+        slidersize.addEventListener('input', function () {
+         sliderValueDisplay.textContent = `${this.value}px`;
+        });
+		
+document.addEventListener('DOMContentLoaded', function () {
+    const videoPlayer = document.getElementById('video-player');
+    const videoFileInput = document.getElementById('video-file');
+    const annotationText = document.getElementById('annotation-text');
+    const annotationsList = document.getElementById('li-of-time-marked-word-annotation-and-ss');
+    const infoPlaybackRate = document.getElementById('info_playbackRate');
+    const infoTimeHolded = document.getElementById('info_timeHolded');
+    let playbackRate = 1.0;
+    let holdedTime = null;
+
+    // Update displayed playback rate
+    const updatePlaybackRateInfo = () => {
+        infoPlaybackRate.textContent = `Playback Speed: ${playbackRate}x`;
+    };
+
+    // Load video file
+    videoFileInput.addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const fileURL = URL.createObjectURL(file);
+            videoPlayer.src = fileURL;
+        }
+    });
+
+    // Play/Pause video
+    document.getElementById('play-pause').addEventListener('click', function () {
+        if (videoPlayer.paused) {
+            videoPlayer.play();
+        } else {
+            videoPlayer.pause();
+        }
+    });
+
+    // Rewind 5 seconds
+    document.getElementById('prev-5-sec').addEventListener('click', function () {
+        videoPlayer.currentTime = Math.max(0, videoPlayer.currentTime - 5);
+    });
+
+    // Forward 5 seconds
+    document.getElementById('next-5-sec').addEventListener('click', function () {
+        videoPlayer.currentTime = Math.min(videoPlayer.duration, videoPlayer.currentTime + 5);
+    });
+
+    // Increase playback speed
+    document.getElementById('increase-rate').addEventListener('click', function () {
+        playbackRate = Math.min(2.0, playbackRate + 0.25);
+        videoPlayer.playbackRate = playbackRate;
+        updatePlaybackRateInfo();
+    });
+
+    // Decrease playback speed
+    document.getElementById('decrease-rate').addEventListener('click', function () {
+        playbackRate = Math.max(0.25, playbackRate - 0.25);
+        videoPlayer.playbackRate = playbackRate;
+        updatePlaybackRateInfo();
+    });
+
+    // Take screenshot and mark the time
+    document.getElementById('erase-annotationsList').addEventListener('click', function ( ) {annotationsList.innerHTML = '';});
+    document.getElementById('take-screenshot').addEventListener('click', function () {
+        const canvas = document.createElement('canvas');
+        canvas.width = videoPlayer.videoWidth;
+        canvas.height = videoPlayer.videoHeight;
+        const context = canvas.getContext('2d');
+        context.drawImage(videoPlayer, 0, 0, canvas.width, canvas.height);
+        const screenshotURL = canvas.toDataURL('image/png');
+        const img = document.createElement('img');
+        img.src = screenshotURL;
+
+        const widthsize = slidersize.value;
+        img.style.width = widthsize;//'100px'; // Adjust size
+        img.style.height = 'auto';
+
+        const currentTime = videoPlayer.currentTime;
+        const formattedTime = new Date(currentTime * 1000).toISOString().substring(11, 19); // Format as HH:MM:SS
+
+        // Append screenshot with video time to the annotations list
+        const li = document.createElement('li');
+        li.innerHTML = `Screenshot taken at <u class="time-jump" data-time="${currentTime}">${formattedTime}</u> <br />`;
+        li.appendChild(img);
+        annotationsList.appendChild(li);
+
+        // Add event listener to the timestamp <u> for jumping to the marked time
+        addTimeJumpListeners();
+    });
+
+    // Mark the current time and display it in info_timeHolded
+    document.getElementById('mark-time').addEventListener('click', function () {
+        holdedTime = Math.max(0, videoPlayer.currentTime - 1); // Mark time -1s
+        const formattedTime = new Date(holdedTime * 1000).toISOString().substring(11, 19); // Format as HH:MM:SS
+        infoTimeHolded.textContent = `Time Held: ${formattedTime}`;
+    });
+
+
+document.getElementById('automark-submit-annotation').addEventListener('click', function () {
+    const currentTime = videoPlayer.currentTime;  // Get the exact current time of the video
+    const annotation = annotationText.value;  // Get the annotation text
+
+        const li = document.createElement('li');
+        const formattedTime = new Date(currentTime * 1000).toISOString().substring(11, 19);  // Format time as HH:MM:SS
+        li.innerHTML = `<u class="time-jump" data-time="${currentTime}">${formattedTime}</u> - ${annotation}`;
+        annotationsList.appendChild(li);  // Add the new annotation to the list
+        // NOT Reset anything the annotation text after submission
+        
+        // Add click listener to the new <u> tag for time jump functionality
+        addTimeJumpListeners();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Function to create list item with annotation, screenshot, and controls
+const createAnnotationListItem = (time, annotation, screenshotURL = null) => {
+    const li = document.createElement('li');
+    li.innerHTML = `
+        Annotation at <u class="time-jump" data-time="${time}">${new Date(time * 1000).toISOString().substring(11, 19)}</u>: 
+        <span class="annotation-text">${annotation}</span>
+        <div class="controls">
+            <button class="edit-btn">Edit</button>
+            <button class="delete-btn">Delete</button>
+        </div>
+    `;
+    if (screenshotURL) {
+        const img = document.createElement('img');
+        img.src = screenshotURL;
+        img.style.width = slidersize.value + 'px';
+        img.style.height = 'auto';
+        li.appendChild(img);
+    }
+    annotationsList.appendChild(li);
+
+    // Add event listeners for Edit and Delete buttons
+    li.querySelector('.edit-btn').addEventListener('click', function () {
+        const annotationText = li.querySelector('.annotation-text');
+        const newAnnotation = prompt('Edit Annotation:', annotationText.textContent);
+        if (newAnnotation !== null) {
+            annotationText.textContent = newAnnotation;
+        }
+    });
+
+    li.querySelector('.delete-btn').addEventListener('click', function () {
+        annotationsList.removeChild(li);
+    });
+
+    // Add event listener to timestamp for jumping to video time
+    addTimeJumpListeners();
+};
+
+// Submit annotation manually
+document.getElementById('submit-annotation').addEventListener('click', function () {
+    if (holdedTime !== null) {
+        const annotation = annotationText.value.trim();
+        if (annotation) {
+            createAnnotationListItem(holdedTime, annotation);
+        } else {
+            alert('Please enter an annotation.');
+        }
+    } else {
+        alert('No time is marked. Please mark the time first.');
+    }
+});
+
+// Automatically mark and submit annotation
+document.getElementById('automark-submit-annotation').addEventListener('click', function () {
+    const currentTime = videoPlayer.currentTime;
+    const annotation = annotationText.value.trim();
+    if (annotation) {
+        createAnnotationListItem(currentTime, annotation);
+    } else {
+        alert('Please enter an annotation.');
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Submit annotation
+    document.getElementById('submit-annotation').addEventListener('click', function () {
+        let currentTime;
+
+        // Check if time is held, if not, set time to videoPlayer.currentTime - 1s
+        if (holdedTime === null) {
+            currentTime = Math.max(0, videoPlayer.currentTime - 1);
+        } else {
+            currentTime = holdedTime;
+        }
+
+        const annotation = annotationText.value;
+        
+            const li = document.createElement('li');
+            const formattedTime = new Date(currentTime * 1000).toISOString().substring(11, 19);
+            li.innerHTML = `<u class="time-jump" data-time="${currentTime}">${formattedTime}</u> - ${annotation}`;
+            annotationsList.appendChild(li);
+
+            //NOT Reset holded time and UI
+            //holdedTime = null;
+            //infoTimeHolded.textContent = '';
+            //annotationText.value = '-#-'; // Reset annotation text
+
+            // Add event listener to the timestamp <u> for jumping to the marked time
+            addTimeJumpListeners();
+    });
+
+    // Add click event listener to all <u> tags with the class 'time-jump'
+    function addTimeJumpListeners() {
+        const timeJumpElements = document.querySelectorAll('.time-jump');
+        timeJumpElements.forEach(function (element) {
+            element.addEventListener('click', function () {
+                const time = parseFloat(this.getAttribute('data-time'));
+                videoPlayer.currentTime = time;
+                videoPlayer.play(); // Optionally, play the video when jumping to the time
+            });
+        });
+    }
+
+    // Save annotations to localStorage
+    document.getElementById('save-data').addEventListener('click', function () {
+        const annotations = [];
+        annotationsList.querySelectorAll('li').forEach(li => {
+            annotations.push(li.innerHTML);
+        });
+        localStorage.setItem('videoAnnotations', JSON.stringify(annotations));
+        alert('Annotations saved.');
+    });
+
+    // Load annotations from localStorage
+    document.getElementById('load-data').addEventListener('click', function () {
+        const savedAnnotations = localStorage.getItem('videoAnnotations');
+        if (savedAnnotations) {
+            annotationsList.innerHTML = '';
+            JSON.parse(savedAnnotations).forEach(annotation => {
+                const li = document.createElement('li');
+                li.innerHTML = annotation;
+                annotationsList.appendChild(li);
+            });
+            alert('Annotations loaded.');
+
+            // Re-attach event listeners to loaded annotations
+            addTimeJumpListeners();
+        } else {
+            alert('No annotations found.');
+        }
+    });
+
+    // Initialize playback rate info
+    updatePlaybackRateInfo();
+});
+
+
+</script>
