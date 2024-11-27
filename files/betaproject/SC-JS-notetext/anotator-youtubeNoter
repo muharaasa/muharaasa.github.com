@@ -1,0 +1,264 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Annotation Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 20px;
+            color: #333;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #444;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #video-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        #video-placeholder {
+            width: 100%;
+            max-width: 600px;
+            height: 340px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        #controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        #controls button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #controls button:hover {
+            background-color: #0056b3;
+        }
+
+        #annotations ul {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        #annotations ul li {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-left: 4px solid #007bff;
+            border-radius: 3px;
+            transition: transform 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #annotations ul li:hover {
+            transform: scale(1.02);
+            background-color: #e9ecef;
+        }
+
+        .annotation-actions button {
+            padding: 5px 10px;
+            margin-left: 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .annotation-actions button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>YouTube Annotation Tool</h1>
+
+    <div>
+        <input type="text" id="youtube-url" value="https://www.youtube.com/watch?v=UYiAlYlSwBo" placeholder="Enter YouTube Video URL">
+        <button id="load-video">Load Video</button>
+    </div>
+
+    <div id="video-container">
+        <div id="video-placeholder"></div>
+    </div>
+
+    <div id="controls">
+        <button id="prev-5-sec">-5 sec</button>
+        <button id="play-pause">Play/Pause</button>
+        <button id="next-5-sec">+5 sec</button>
+    </div>
+
+    <textarea id="annotation-text" placeholder="Enter annotation here..."></textarea>
+    <div id="annotation-buttons">
+        <button id="mark-time">Mark Time</button>
+        <button id="submit-annotation">Submit Annotation</button>
+        <button id="submit-immediately">Submit Immediately</button>
+    </div>
+
+    <div id="annotations">
+        <ul id="annotations-list"></ul>
+    </div>
+
+    <script>
+        let player;
+        let annotations = [];
+
+        // Load YouTube IFrame API
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('video-placeholder', {
+                height: '340',
+                width: '600',
+                events: {
+                    onReady: () => console.log("Player ready")
+                }
+            });
+        }
+
+        // Load video from input URL
+        document.getElementById('load-video').addEventListener('click', () => {
+            const url = document.getElementById('youtube-url').value;
+            const videoId = url.split('v=')[1]?.split('&')[0];
+            if (videoId) {
+                player.loadVideoById(videoId);
+            } else {
+                alert("Invalid YouTube URL");
+            }
+        });
+
+        // Play/Pause control
+        document.getElementById('play-pause').addEventListener('click', () => {
+            const state = player.getPlayerState();
+            if (state === YT.PlayerState.PLAYING) {
+                player.pauseVideo();
+            } else {
+                player.playVideo();
+            }
+        });
+
+        // Skip back 5 seconds
+        document.getElementById('prev-5-sec').addEventListener('click', () => {
+            const currentTime = player.getCurrentTime();
+            player.seekTo(Math.max(0, currentTime - 5), true);
+        });
+
+        // Skip forward 5 seconds
+        document.getElementById('next-5-sec').addEventListener('click', () => {
+            const currentTime = player.getCurrentTime();
+            player.seekTo(currentTime + 5, true);
+        });
+
+        // Mark time
+        document.getElementById('mark-time').addEventListener('click', () => {
+            const currentTime = player.getCurrentTime();
+            annotations.push({ time: currentTime, text: '' });
+            updateAnnotationsList();
+        });
+
+        // Submit annotation
+        document.getElementById('submit-annotation').addEventListener('click', () => {
+            const annotationText = document.getElementById('annotation-text').value;
+            const lastAnnotation = annotations[annotations.length - 1];
+            if (lastAnnotation) {
+                lastAnnotation.text = annotationText;
+            }
+            updateAnnotationsList();
+        });
+
+        // Submit immediately
+        document.getElementById('submit-immediately').addEventListener('click', () => {
+            const currentTime = player.getCurrentTime();
+            const annotationText = document.getElementById('annotation-text').value;
+            annotations.push({ time: currentTime, text: annotationText });
+            updateAnnotationsList();
+        });
+
+        // Update annotations list
+        function updateAnnotationsList() {
+            const list = document.getElementById('annotations-list');
+            list.innerHTML = '';
+            annotations.forEach((annotation, index) => {
+                const li = document.createElement('li');
+
+                // Annotation text
+                li.innerHTML = `Time: ${formatTime(annotation.time)} - ${annotation.text}`;
+
+                // Actions
+                const actions = document.createElement('div');
+                actions.classList.add('annotation-actions');
+
+                const editButton = document.createElement('button');
+                editButton.textContent = "Edit";
+                editButton.addEventListener('click', () => editAnnotation(index));
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = "Delete";
+                deleteButton.addEventListener('click', () => deleteAnnotation(index));
+
+                actions.appendChild(editButton);
+                actions.appendChild(deleteButton);
+
+                li.appendChild(actions);
+                li.addEventListener('click', () => player.seekTo(annotation.time, true));
+                list.appendChild(li);
+            });
+        }
+
+        // Edit annotation
+        function editAnnotation(index) {
+            const newText = prompt("Edit Annotation:", annotations[index].text);
+            if (newText !== null) {
+                annotations[index].text = newText;
+                updateAnnotationsList();
+            }
+        }
+
+        // Delete annotation
+        function deleteAnnotation(index) {
+            if (confirm("Are you sure you want to delete this annotation?")) {
+                annotations.splice(index, 1);
+                updateAnnotationsList();
+            }
+        }
+
+        // Format time (HH:MM:SS)
+        function formatTime(seconds) {
+            const date = new Date(seconds * 1000);
+            return date.toISOString().substr(11, 8);
+        }
+    </script>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>
