@@ -1,5 +1,7 @@
 
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,7 +43,7 @@ Well, working on a movement tracking application using HTML, CSS, and JavaScript
 <li><b>Control Buttons:</b><br /><br />Various buttons allow users to start/stop tracking, play/pause the video, adjust parameters (sensitivity, frequency, tolerance), and reset snapshots.</li><br />
 <li><b>Movement Detection</b>:<br /><br />The script detects movement by comparing the pixel data of consecutive frames using the calculateFrameDifference...y once to avoid confusion and potential errors.</li><br />
 <li><b>Event Listeners for Sliders</b>:<br /><br />The event listeners for sliders (sensitivity, frequency, and tolerance) correctly update their values. Make sure to also update any UI elements to reflect changes as necessary.</li><br />
-<li><b>Filtering Logic</b>:<br /><br />Your filterMovementPoints function is well structured, but ensure that it considers edge cases where there may be no movement points or if all points fall below the max percentage threshold.</li><br />
+<li><b>Filtering Logic</b>:<br /><br /> filterMovementPoints function is need to be ensured later that it considers edge cases where there may be no movement points or if all points fall below the max percentage threshold.</li><br />
 <hr>
 The terms listed below to relate to various metrics that could be used in contexts like image processing, machine learning, or perhaps environmental monitoring. 
 	<li>it hasnt have object detection yet, if the case is moving car, it cant yet define the road or the car.</li>
@@ -73,6 +75,12 @@ Source Type : <i id="sourceType">-</i>
 
 
 <p>
+<button id="cleartrackoverlay"> clear the trackoverlay </button>
+<button id="take-screenshot"> take-screenshot </button>
+</p>
+
+
+<p>
 <button id="backwardButton">-5 sec</button>
 <button id="playPauseButton">Play/Pause</button>
 <button id="forwardButton">+5 sec</button><br>
@@ -100,6 +108,12 @@ On Tracking : <i id="trackingIndicator">-</i>
 <span id="max-spots-value">50</span></li>
 
 <br>
+<label for="timeRange">Auto Save : <sub>Set interval for Auto download captured difference (& Reset snapshot)</sub>(seconds): </label>
+    <input type="range" id="timeRange" min="0" max="60" value="10" oninput="updateLabel(this.value)">
+    <span id="timeLabel">10</span> seconds
+    <button onclick="startContinuousAlert()">Start</button>
+    <button onclick="stopContinuousAlert()">Stop</button>
+
 <button id="resetsnapshots"> reset snapshots</button>  <button onclick="saveAllSnapshots()">saveAllSnapshots</button>
 
 <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
@@ -535,7 +549,71 @@ function saveAllSnapshots() {
 
 
 
+let alertInterval;
 
+        function updateLabel(value) {
+            document.getElementById('timeLabel').textContent = value;
+        }
+
+        function startContinuousAlert() {
+            const timeRange = parseInt(document.getElementById('timeRange').value);
+
+            // Stop any existing interval
+            clearInterval(alertInterval);
+
+            // If timeRange is 0, do not start an interval
+            if (timeRange === 0) {
+                alert("Interval set to 0 seconds. Alerts stopped.");
+                return;
+            }
+
+            // Start a new interval
+            alertInterval = setInterval(() => {
+                saveAllSnapshots(); snapshots.innerHTML = '';
+                console.log("saved");
+            }, timeRange * 1000);
+        }
+
+        function stopContinuousAlert() {
+            clearInterval(alertInterval);
+            alert("Alerts stopped."); 
+        }
+		
+		
+		
+    document.getElementById('cleartrackoverlay').addEventListener('click', function () {overlayContext.clearRect(0, 0, overlay.width, overlay.height);
+	});
+		
+		
+    document.getElementById('take-screenshot').addEventListener('click', function () {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const context = canvas.getContext('2d');
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const screenshotURL = canvas.toDataURL('image/png');
+        const img = document.createElement('img');
+        img.src = screenshotURL;
+
+        img.style.width = canvas.width;//'100px'; // Adjust size
+        img.style.height = 'auto';
+
+        // Create an anchor element for download
+        let downloadLink = document.createElement('a');
+
+        // Set the download file name with the folder prefix and dynamic timestamp/source
+        downloadLink.download = `downloaded-files/snapshot_fromTrackers.jpg`;
+
+        // Set the href to the image source
+        downloadLink.href = img.src;
+
+        // Trigger download
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    });
+        
+    ;
     </script>
 </body>
 </html>
