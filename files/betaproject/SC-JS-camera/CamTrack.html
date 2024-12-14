@@ -100,8 +100,8 @@ On Tracking : <i id="trackingIndicator">-</i>
 <span id="frequency-value">1</span></li>
 
 <li><label for="tolerance">Tolerance: </label>
-<input type="range" id="tolerance" name="tolerance" min="0" max="1000" value="500">
-<span id="tolerance-value">500</span></li>
+<input type="range" id="tolerance" name="tolerance" min="0" max="1000" value="90">
+<span id="tolerance-value">90</span></li>
 
 <li><label for="max-spots">Max Spot Percentage (%): </label>
 <input type="range" id="max-spots" name="max-spots" min="0" max="100" value="50">
@@ -113,6 +113,13 @@ On Tracking : <i id="trackingIndicator">-</i>
     <span id="timeLabel">10</span> seconds
     <button onclick="startContinuousAlert()">Start</button>
     <button onclick="stopContinuousAlert()">Stop</button>
+<br>
+<label for="timeRangesnapshot">Non Save Auto Clear: <sub>Set interval for Auto Reset snapshot</sub>(seconds): </label>
+    <input type="range" id="timeRangesnapshot" min="0" max="60" value="10" oninput="updateLabelsnapshot(this.value)">
+    <span id="timeLabelsnapshot">10</span> seconds
+    <button onclick="startContinuoussnapshot()">Start</button>
+    <button onclick="stopContinuoussnapshot()">Stop</button>
+<br>
 
 <button id="resetsnapshots"> reset snapshots</button>  <button onclick="saveAllSnapshots()">saveAllSnapshots</button>
 
@@ -550,36 +557,56 @@ function saveAllSnapshots() {
 
 
 let alertInterval;
-
         function updateLabel(value) {
             document.getElementById('timeLabel').textContent = value;
         }
-
         function startContinuousAlert() {
             const timeRange = parseInt(document.getElementById('timeRange').value);
-
             // Stop any existing interval
             clearInterval(alertInterval);
-
             // If timeRange is 0, do not start an interval
             if (timeRange === 0) {
                 alert("Interval set to 0 seconds. Alerts stopped.");
                 return;
             }
-
             // Start a new interval
             alertInterval = setInterval(() => {
                 saveAllSnapshots(); snapshots.innerHTML = '';
                 console.log("saved");
             }, timeRange * 1000);
         }
-
         function stopContinuousAlert() {
             clearInterval(alertInterval);
             alert("Alerts stopped."); 
         }
 		
 		
+
+let snapshotInterval;
+        function updateLabelsnapshot(value) {
+            document.getElementById('timeLabelsnapshot').textContent = value;
+        }
+        function startContinuoussnapshot() {
+            const timeRange = parseInt(document.getElementById('timeRangesnapshot').value);
+            // Stop any existing interval
+            clearInterval(snapshotInterval);
+            // If timeRange is 0, do not start an interval
+            if (timeRangesnapshot === 0) {
+                alert("Interval set to 0 seconds. snapshot auto clear stopped.");
+                return;
+            }
+            // Start a new interval
+            snapshotInterval = setInterval(() => {
+                snapshots.innerHTML = '';
+            }, timeRange * 1000);
+        }
+        function stopContinuoussnapshot() {
+            clearInterval(snapshotInterval);
+            alert("snapshot auto reset stopped."); 
+        }
+
+
+
 		
     document.getElementById('cleartrackoverlay').addEventListener('click', function () {overlayContext.clearRect(0, 0, overlay.width, overlay.height);
 	});
