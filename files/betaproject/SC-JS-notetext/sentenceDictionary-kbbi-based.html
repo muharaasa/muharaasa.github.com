@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Word Search</title>
+    <style>
+        .not-found {
+            color: red;
+        }
+        .button {
+            margin-left: 10px;
+        }
+        .formatted {
+            white-space: pre-wrap; /* Preserve whitespace and line breaks */
+        }
+        .highlight {
+            color: navy;
+            font-weight: bold;
+        }
+        .hidden {
+            display: none;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 10px 0;
+        }
+        br {
+            display: block;
+            content: "";
+            margin: 0.5em 0;
+        }
+    </style>
+</head>
+<body>
+<center><a href="shuffled_kbbi_python.csv" download>Download example default Dictionary</a></center>
+    <input type="file" id="fileInput" />
+    <textarea id="sentenceInput" rows="4" cols="50" placeholder="Enter sentence here..."></textarea>
+    <button id="processButton">Process</button>
+    <ul id="resultsList"></ul>
+
+    <script name="script.js">
+document.getElementById('processButton').addEventListener('click', () => {
+    const fileInput = document.getElementById('fileInput');
+    const sentenceInput = document.getElementById('sentenceInput').value;
+    const resultsList = document.getElementById('resultsList');
+    
+    if (fileInput.files.length === 0) {
+        alert('Please select a CSV file.');
+        return;
+    }
+
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+        const csvContent = event.target.result;
+        const csvData = parseCSV(csvContent);
+        const terms = new Map(csvData.map(([term, definition]) => [term.toLowerCase(), definition]));
+        
+        resultsList.innerHTML = ''; // Clear previous results
+
+        const words = sentenceInput.match(/\b\w+\b/g);
+        if (words) {
+            words.forEach(word => {
+                const listItem = document.createElement('li');
+                word = word.toLowerCase(); // Ensure case-insensitive search
+                
+                if (terms.has(word)) {
+                    listItem.innerHTML = formatDefinition(word, terms.get(word));
+                } else {
+                    listItem.innerHTML = `${word} <span class="not-found">Term not found</span>`;
+                    const alertButton = document.createElement('button');
+                    alertButton.textContent = 'Alert';
+                    alertButton.className = 'button';
+                    alertButton.onclick = () => alert(`There is no ${word}`);
+                    listItem.appendChild(alertButton);
+                }
+                resultsList.appendChild(listItem);
+            });
+        } else {
+            alert('No words found in the sentence.');
+        }
+    };
+
+    reader.readAsText(file);
+});
+
+function parseCSV(csv) {
+    const rows = csv.split('\n');
+    return rows.map(row => {
+        const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+        return cols.map(col => col.trim().replace(/^"|"$/g, ''));
+    });
+}
+
+function formatDefinition(term, definition) {
+    // Replace CSV placeholders with HTML tags
+    let formatted = definition
+        .replace(/\[b\]/g, '<b>')
+        .replace(/\[\/b\]/g, '</b>')
+        .replace(/\[i\]/g, '<i>')
+        .replace(/\[\/i\]/g, '</i>')
+        .replace(/;;/g, '<hr>') // Replace ;; with <hr>
+        .replace(/;/g, '<br>');  // Replace ; with <br>
+    
+    // Highlight the term in navy
+    formatted = formatted.replace(new RegExp(`<b>${term}</b>`, 'gi'), `<b class="highlight">${term}</b>`);
+    
+    return formatted;
+}
+
+    </script>
+</body>
+</html>
