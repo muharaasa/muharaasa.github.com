@@ -1,0 +1,268 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statistical Measures Calculator</title>
+<style>
+	ul{margin: 10px; padding: 10px; background: rgba(200,200,200,1); color : black;}
+	li{margin: 10px; padding: 10px; background: rgba(70,70,70,0.9); color : cyan;}
+</style>
+</head>
+<body>
+<h1>Statistical Measures Calculator</h1>
+
+<div>
+  <label for="data-input">Enter data points (comma-separated):</label>
+  <input type="text" id="data-input" value='0,110,10,40,0.6,1,2,3,4,5,8,67,1000' placeholder="e.g., 1, 2, 3, 4, 5">
+
+  <button onclick="calculateMeasures()">Calculate</button>
+</div>
+
+<div id="result">
+  <h2>Results:</h2>
+  <ul>[...] 
+  		<li>Sorted Data : <i id="sortedData-result">sortedData </i></li>
+  		<li>Counted : <i id="countedData-result">sortedData </i></li>
+  		<li>Summarize : <i id="summarize-result">summarize </i></li>
+  		<li>Minimum : <i id="minimum-result">Minimum </i></li> 
+  		<li>Position on 1/4 Data : <i id="position1p4-result">N/A </i></li> 
+  		<li>Position on 2/4 Data : <i id="position2p4-result">N/A </i></li> 
+  		<li>Position on 3/4 Data : <i id="position3p4-result">N/A </i></li> 
+  		<li>Maximum : <i id="maximum-result">Maximum </i></li>
+  		<li>Range Max-Min: <i id="therange-result">range maximum vs minimum </i></li>
+  		<li>Range AverageInterval: <i id="averageinterval-result">average Interval </i></li>
+  </ul>
+  <ul>Mean | average value <li><i id="mean-result">Mean: </i></li><br><sub>Mean is the average of all value there</sub></ul>
+  <ul>Q2 | 2nd Quartile | Median <li><i id="median-result">Median: </i></li><br><sub>Middle value or Median can be called as Second Quartile (Q2) and gained by taking the Middle most value after sorting the data</sub></ul>
+
+  <ul>Mode | Mostly appeared <li><i id="mode-result">Mode: </i></li><br><sub>The mode is the value that appears most frequently. Here, the mode is the value that most appeared</sub></ul>
+  <ul>Q1 | 1st Quartile : <li><i id="firstQuartile-result">firstQuartile: </i></li><br><sub>The first quartile (25th percentile) is the median of the first half of the sorted data.</sub><br>It's gained by Identify the median of the first half of the sorted data (excluding the overall median if the number of data points is odd).</ul>
+  <ul>Q3 | 3rd Quartile : <li><i id="quartile3-result">Third Quartile: </i></li><br><sub>The 75th percentile of the data. It separates the lowest 75% of the data from the highest 25%.</sub><br><sub>Its gained by Identify the median of the second half of the sorted data (excluding the overall median if the number of data points is odd).</sub></ul>
+  <ul>Q3 | 4th Quartile there <li><i id="quartile4-result">Fourth Quartile  </i></li><br><sub> ... </sub><br><sub> ..... </sub></ul>
+  <ul>IQR | Inter Quartile : <li><i id="iqr-result">Inter Quartile: </i></li><br><sub>The </sub><br><sub>Its gained by Subtracting Q1 from Q3. (Q3 - Q1)</sub>
+  		<details>
+		<summary>More about IQR: </summary>
+		<br><h2>Usage Measure of Spread:</h2> 
+		<br>The IQR provides a measure of the spread of the middle 50% of the data, giving a sense of the variability without being affected by extreme values.
+		<br><h3>Identifying Outliers:</h3> 
+		<br>Outliers can be identified using the IQR. Typically, an outlier is any data point that is more than 1.5 times the IQR above Q3 or below Q1.
+		<br><b>Lower Bound=Q1−1.5×IQR</b>
+		<br><b>Upper Bound =Q3+1.5×IQR</b>
+		<br> Example of Identifying Outliers
+<br>For the given data set: [0,0,0,0,1,2,3,4,5,8,67,1000] 
+<li>Lower Bound:<br> 0−1.5×37.5=−56.25</li>
+<li>Upper Bound:<br>37.5+1.5×37.5=93.75</li>
+<br>Any data point below -56.25 or above 93.75 is considered an outlier. In this case, 1000 is an outlier.
+		<br>
+		<br><h3>Robustness:</h3>
+		<br>The IQR is a robust measure of variability because it is not influenced by outliers or extreme values, unlike the range or standard deviation.
+<br><h3>Conclusion</h3>
+<br>The IQR is a valuable statistical tool used to understand the spread and central tendency of a data set, as well as to identify outliers.
+<br>It provides a clear picture of the middle 50% of the data, making it useful for robust statistical analysis.
+		</details>
+  </ul>
+
+<hr>
+  <ul>Special Case (byof)| Number Involved in there
+  <details><summary>[ext.]</summary>
+  <input type="number" id="firstindex-input" value='3' placeholder="e.g.: 3">
+  <input type="number" id="lastindex-input" value='4' placeholder="e.g.: 4">
+  </details>
+  		<li><i id="deretdatabyof">Values Involved in theese part and its index</i></li><br><sub>Spesial untuk nanti ada input numbers (2)</sub>
+  		<li>Counted : <i id="counted-byof">sortedData </i></li>
+  		<li>Summarize : <i id="summarize-byof">summarize </i></li>
+  		<li>Minimum : <i id="minimum-byof">Minimum </i></li>
+  		<li>Maximum : <i id="maximum-byof">Maximum </i></li>
+  		<li>Range : <i id="therange-byof">range maximum vs minimum </i></li>
+  </ul>
+ <!---
+ by of msaih progress
+  <ul>Unimodal <li><i id=""></i></li><br><sub>Maximum value</sub></ul>
+  <ul>Bimodal <li><i id=""></i></li><br><sub>Maximum value</sub></ul>
+  <ul>Multimodal <li><i id=""></i></li><br><sub>Maximum value</sub></ul>
+--->
+</div>
+
+<script>
+function calculateMeasures() {
+  const dataInput = document.getElementById('data-input').value.trim();
+  const dataPoints = dataInput.split(',').map(point => parseFloat(point.trim()));
+
+  const sortedData = calculatesortData(dataPoints);
+  
+// Calculate indices
+  const quarterIndex = Math.floor(sortedData.length * 0.25);
+  const halfIndex = Math.floor(sortedData.length * 0.5);
+  const threeQuarterIndex = Math.floor(sortedData.length * 0.75);
+
+// Get values
+  const quarterValue = sortedData[quarterIndex];
+  const halfValue = sortedData[halfIndex];
+  const threeQuarterValue = sortedData[threeQuarterIndex];
+
+  document.getElementById('position1p4-result').textContent = quarterValue;
+  document.getElementById('position2p4-result').textContent = halfValue;
+  document.getElementById('position3p4-result').textContent = threeQuarterValue;
+
+
+  console.log(sortedData);
+  const countedData = dataPoints.length;
+  
+  const mean = calculateMean(dataPoints);
+  const median = calculateMedian(dataPoints);
+  const mode = calculateMode(dataPoints);
+  
+  const firstQuartile = calculateFirstQuartile(dataPoints);
+  const thirdQuartile = calculateThirdQuartile(dataPoints);
+  const fourthQuartile = calculateFourthQuartile(dataPoints);
+  const iqr = calculateIQR(dataPoints, firstQuartile, thirdQuartile);
+
+  document.getElementById('sortedData-result').textContent = ` ${sortedData} `;
+  document.getElementById('countedData-result').textContent = ` ${countedData} `;
+   calculatesummarysimple(dataPoints);
+  
+  const averageinterval = calculateAverageInterval(sortedData);
+  document.getElementById('averageinterval-result').textContent = averageinterval.toFixed(2);
+  
+  document.getElementById('mean-result').textContent = ` ${mean}`;
+  document.getElementById('median-result').textContent = ` ${median}`;
+  document.getElementById('mode-result').textContent = ` ${mode}`;
+  
+  document.getElementById('firstQuartile-result').textContent = ` ${firstQuartile}`;
+  document.getElementById('quartile3-result').textContent = `Q3: ${thirdQuartile}`;
+  document.getElementById('quartile4-result').textContent = `Q4: ${fourthQuartile}`;
+  document.getElementById('iqr-result').textContent = `IQR: ${iqr}`;
+  
+  const firstindex = document.getElementById('firstindex-input').value;
+  const lastindex = document.getElementById('lastindex-input').value;
+
+  const deretdatabyof = sortingderetdataByOf(dataPoints, firstindex, lastindex);
+  document.getElementById('deretdatabyof').innerHTML = deretdatabyof.map(item => `<span>${item.value}</span><sub>${item.index}</sub>`).join(', ');
+
+}
+
+function calculatesortData(dataPoints) {
+  return dataPoints.slice().sort((a, b) => a - b);
+}
+
+function calculatesummarysimple(dataPoints) {
+  const summarize = dataPoints.reduce((acc, val) => acc + val, 0);
+  const maximum = Math.max(...dataPoints);
+  const minimum = Math.min(...dataPoints);
+  const therange = maximum-minimum;
+  
+  document.getElementById('summarize-result').textContent = ` ${summarize}`;
+  document.getElementById('maximum-result').textContent = ` ${maximum}`;
+  document.getElementById('minimum-result').textContent = ` ${minimum}`;
+  document.getElementById('therange-result').textContent = ` ${therange}`;
+console.log(" Tinggal perbandingan msing masing A1 vs Q3 vs Q4 senggang kah msing masing?");
+
+}
+
+
+function calculateMean(dataPoints) {
+  const sum = dataPoints.reduce((acc, val) => acc + val, 0);
+  return sum / dataPoints.length;
+}
+
+function calculateMedian(dataPoints) {
+  const sortedData = dataPoints.slice().sort((a, b) => a - b);
+  const mid = Math.floor(sortedData.length / 2);
+  return sortedData.length % 2 !== 0 ? sortedData[mid] : (sortedData[mid - 1] + sortedData[mid]) / 2;
+}
+
+function calculateMode(dataPoints) {
+  const counts = {};
+  let maxCount = 0;
+  let modes = [];
+
+  dataPoints.forEach(point => {
+    counts[point] = (counts[point] || 0) + 1;
+    if (counts[point] > maxCount) {
+      maxCount = counts[point];
+      modes = [point];
+    } else if (counts[point] === maxCount) {
+      modes.push(point);
+    }
+  });
+
+  return modes.join(', ');
+}
+
+
+function calculateAverageInterval(sortedData) {
+  if (sortedData.length < 2) return 0;
+
+  let totalInterval = 0;
+  for (let i = 1; i < sortedData.length; i++) {
+    totalInterval += sortedData[i] - sortedData[i - 1];
+  }
+
+  return totalInterval / (sortedData.length - 1);
+}
+
+
+
+function calculateFirstQuartile(dataPoints) {
+  const sortedData = dataPoints.slice().sort((a, b) => a - b);
+  const pos = (sortedData.length + 1) / 4;
+  const base = Math.floor(pos) - 1;
+  const remainder = pos - Math.floor(pos);
+
+  if (base < 0) {
+    return sortedData[0].toFixed(2);
+  } else if (base >= sortedData.length - 1) {
+    return sortedData[sortedData.length - 1].toFixed(2);
+  } else {
+    return (sortedData[base] + remainder * (sortedData[base + 1] - sortedData[base])).toFixed(2);
+  }
+}
+
+function calculateThirdQuartile(dataPoints) {
+  const sortedData = dataPoints.slice().sort((a, b) => a - b);
+  const pos = 3 * (sortedData.length + 1) / 4; 
+  const base = Math.floor(pos) - 1;
+  const remainder = pos - Math.floor(pos);
+
+  if (base < 0) {
+    return sortedData[0].toFixed(2);
+  } else if (base >= sortedData.length - 1) {
+    return sortedData[sortedData.length - 1].toFixed(2);
+  } else {
+    return (sortedData[base] + remainder * (sortedData[base + 1] - sortedData[base])).toFixed(2);
+  }
+}
+
+function calculateFourthQuartile(dataPoints) {
+  const sortedData = dataPoints.slice().sort((a, b) => a - b);
+  return sortedData[sortedData.length - 1].toFixed(2);
+}
+
+function calculateIQR(dataPoints, q1, q3) {
+  return (q3 - q1).toFixed(2);
+}
+
+function sortingderetdataByOf(dataPoints, firstindex, lastindex) {
+
+  const sortedData = dataPoints.slice().sort((a, b) => a - b);
+  const quarterSize = Math.floor(sortedData.length / 4);
+  const startIndex = (firstindex - 1) * quarterSize;
+  const endIndex = lastindex * quarterSize;
+
+  const result = [];
+  for (let i = startIndex; i < endIndex && i < sortedData.length; i++) {
+    result.push({
+      index: i,
+      value: sortedData[i]
+    });
+  }
+
+  return result;
+}
+
+</script>
+</body>
+</html>
