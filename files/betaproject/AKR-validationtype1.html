@@ -1,55 +1,77 @@
 
-<div style='padding:10px;margin:15px;background:rgb(230,230,230);font-family:tahoma;font-size:12px; text-align:justify;height:70%;border-radius:10px'>
-masukan data : 
-<ul>
-<button onclick='chgxidx()'>Edit value's X</button> x's : <u id='xindex'></u> contoh : 1,2,4,5 <br>
-<button onclick='chgyidx()'>Edit value's Y</button> y's : <u id='yindex'></u> contoh : 1,3,5,7<br>
-<button onclick='calccorel()'>calculate the stdev</botton>
-</ul>
-<ol>Result :
-  <li id='datamcxy'></li>
-  <li id='ccorel'></li>
-  <li id='cortet'></li>
-</ol> 
-
-
+<div style="padding:10px;margin:15px;background:rgb(230,230,230);
+            font-family:tahoma;font-size:12px; text-align:justify;
+            height:auto;border-radius:10px">
+    Masukkan data: 
+    <ul>
+        <button onclick="chgxidx()">Edit value's X</button> x's : <u id="xindex"></u> contoh: 1,2,4,5 <br>
+        <button onclick="chgyidx()">Edit value's Y</button> y's : <u id="yindex"></u> contoh: 1,3,5,7<br>
+        <button onclick="calccorel()">Calculate the Stdev</button>
+    </ul>
+    <ol>Result:
+        <li id="datamcxy"></li>
+        <li id="ccorel"></li>
+        <li id="cortet"></li>
+    </ol>
 </div>
-<script type='text/javascript'>
-function chgxidx(){
-	var idxindex = document.querySelector('#xindex');
-	idxindex.innerHTML = '['+prompt('')+']';
-}
-function chgyidx(){
-	var idyindex = document.querySelector('#yindex');
-	idyindex.innerHTML = '['+prompt('')+']';
-}
 
-function calccorel(){
-	const xindex = JSON.parse(document.getElementById('xindex').innerHTML);
-	const yindex = JSON.parse(document.getElementById('yindex').innerHTML);
-	let obnumb = xindex.length;
-		let sumx= 0;for (let i = 0; i < xindex.length; i++){sumx += xindex[i];}
-	let avgx = sumx/obnumb;
-		let sumy= 0;for (let i = 0; i < yindex.length; i++){sumy += yindex[i];}
-	let avgy = sumy/obnumb;
-	let xcrtrta =0; for (let i = 0; i < xindex.length; i++){xcrtrta += Math.pow((xindex[i]-avgx),2);};
-	let istdevx = Math.pow((1/(obnumb-1)*xcrtrta),0.5);
-	let xcrtrtb =0; for (let i = 0; i < yindex.length; i++){xcrtrtb += Math.pow((yindex[i]-avgy),2);};
-	let istdevy = Math.pow((1/(obnumb-1)*xcrtrtb),0.5);
-	let xcrtrtc = 0;for(i = 0; i < obnumb; i++){xcrtrtc += (((xindex[i]-avgx)/istdevx)*((yindex[i]-avgy)/istdevy))}
-	let ccorel = (1/(obnumb-1))*xcrtrtc;
-	document.querySelector('#ccorel').innerHTML ='koefisien korelasi : '+ccorel+'<br>standar deviasi x : '+istdevx+'<br>standar deviasi y : '+istdevy;
-	document.querySelector('#cortet').innerHTML = 'x : "'+xindex+'" &  y : "'+yindex+'" <br> rerata x : '+avgx+' <br> rerata y : '+avgy+'<br>Derajat kemiringan : '+((avgx/avgy)*90);
-
-	let sumx2 = 0;for (let i = 0; i < obnumb; i++){sumx2 += Math.pow(xindex[i],2);}
-	let sumxy = 0;for (let i = 0; i < obnumb; i++){sumxy += (xindex[i]*yindex[i]);}
-	var slope = (obnumb*sumxy-sumx*sumy)/(obnumb*sumx2-Math.pow(sumx,2));
-	var intersept= ((sumy*sumx2)-(sumx*sumxy))/(obnumb*(sumx2-(Math.pow(sumx,2))));
-	txhasil = slope*xindex[0]-intersept;
-	document.querySelector('#datamcxy').innerHTML='slope : '+slope+'<br>intersep : '+intersept+' <br> tes y untuk x<sub>1</sub> : '+txhasil ;
-
-
+<script type="text/javascript">
+function chgxidx() {
+    var input = prompt("Masukkan nilai X (pisahkan dengan koma)");
+    if (input !== null && input.trim() !== '') {
+        document.querySelector("#xindex").textContent = "[" + input + "]";
+    }
 }
 
+function chgyidx() {
+    var input = prompt("Masukkan nilai Y (pisahkan dengan koma)");
+    if (input !== null && input.trim() !== '') {
+        document.querySelector("#yindex").textContent = "[" + input + "]";
+    }
+}
+
+function calccorel() {
+    try {
+        const xindex = JSON.parse(document.getElementById("xindex").textContent);
+        const yindex = JSON.parse(document.getElementById("yindex").textContent);
+        let obnumb = xindex.length;
+
+        let sumx = xindex.reduce((a, b) => a + b, 0);
+        let sumy = yindex.reduce((a, b) => a + b, 0);
+        let avgx = sumx / obnumb;
+        let avgy = sumy / obnumb;
+
+        let sumx2 = xindex.reduce((sum, val) => sum + Math.pow(val - avgx, 2), 0);
+        let sumy2 = yindex.reduce((sum, val) => sum + Math.pow(val - avgy, 2), 0);
+        let sumxy = xindex.reduce((sum, val, i) => sum + ((val - avgx) * (yindex[i] - avgy)), 0);
+
+        let istdevx = Math.sqrt(sumx2 / (obnumb - 1));
+        let istdevy = Math.sqrt(sumy2 / (obnumb - 1));
+        let ccorel = sumxy / ((obnumb - 1) * istdevx * istdevy);
+
+        let slope = sumxy / sumx2;
+        let intersept = (sumy - slope * sumx) / obnumb;
+        let txhasil = slope * xindex[0] - intersept;
+
+        document.querySelector("#ccorel").textContent =
+            "Koefisien korelasi: " + ccorel.toFixed(4) + 
+            "<br> Standar deviasi X: " + istdevx.toFixed(4) + 
+            "<br> Standar deviasi Y: " + istdevy.toFixed(4);
+
+        document.querySelector("#cortet").textContent =
+            "X: " + xindex + " & Y: " + yindex + 
+            "<br> Rerata X: " + avgx.toFixed(4) + 
+            "<br> Rerata Y: " + avgy.toFixed(4) + 
+            "<br> Derajat kemiringan: " + (Math.atan(avgx / avgy) * (180 / Math.PI)).toFixed(2);
+
+        document.querySelector("#datamcxy").textContent =
+            "Slope: " + slope.toFixed(4) + 
+            "<br> Intercept: " + intersept.toFixed(4) + 
+            "<br> Tes Y untuk X1: " + txhasil.toFixed(4);
+    } catch (error) {
+        alert("Data tidak valid. Pastikan format angka benar.");
+    }
+}
 </script>
-<center> this script was uploaded by muharaasa</center>
+
+<center> This script was uploaded by muharaasa </center>
