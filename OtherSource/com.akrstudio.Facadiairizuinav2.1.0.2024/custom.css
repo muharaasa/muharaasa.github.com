@@ -1,0 +1,45 @@
+body,html{ 
+            background: #A7A7A7;
+            background-repeat: no-repeat; 
+            background-attachment : center;
+            background-size: cover ;
+            overflow : scroll;
+            font-family:verdana,serif;
+            font-size:7pt;text-align:justify;}
+
+
+.say{text-align: justify;font-family: Serif;font-size: 6pt;color: black;background: #C2BEBE;width: 100%;}
+
+
+
+#topmenu{text-align:center;background:darkgrey;padding:5px;margin:5px;width:95%;}
+#topmenu tr td:hover{background:white;}
+#topmenu tr td a{text-decoration:none;font-family: Serif;font-size: 7pt;color: red;}
+
+
+.selectbg{background: grey; -caa
+                  border: 1px solid black;text-align: justify;padding:10px;margin:3px;
+                  width: 100%;}
+.spec_right{
+                  border-bottom: 1px dotted #524F4F;margin:5px;padding:5px;
+                  border-radius: 1px;}
+.spec_right:active{background:rgba(200,100,200,0.8);}
+.spec_right:hover{border-bottom: solid darkgrey 1px;border-top: solid maroon 1px;background:rgba(250,250,250,0.6);}
+.selectbg tr td a{text-decoration:none;margin:10px}
+.menu{text-align: center;font-family: Serif;font-size: 12pt;color: grey;background: grey;}
+
+.mascot{width: 80%;background: #A7A7A7;}
+
+.emoticon{align: center;width: 20px;height: 20px;}
+
+.app{align: center;width: 30px;height: 30px;}
+
+.spec_left{width: 30%;overflow:scroll;text-align: right;font-family: Serif;font-size: 15pt;color: white;background: grey;}
+.spec_left img{width: 60%;overflow:scroll}
+.spec_left:hover{background:none;border-bottom:0px black dashed;border-left:0px black dotted;}
+.reselect{font-family: Serif;font-size: 8pt;color: maroon;}
+.select{font-family: Serif;font-size: 8pt;color: purple;}
+.libselect{font-family: Serif;font-size: 6pt;color: pink;}
+.pilih{border: 1px solid #000000;}
+.pilih a{text-decoration: none;}
+.menuf{text-align: center;font-family: Serif;font-size: 6pt;color: #00F1FF;}
