@@ -1,0 +1,97 @@
+<!--- content?--->
+﻿<html><head><title>iriz</title></head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"> 
+   <meta name="viewport" content="width=device-width, user-scalable=no" />
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+html, body{ color:#ffffff; background: #000000;font-size:7pt;font-family:serif;padding:10px; }
+#herpics {margin:10px;text-align: center;}
+     #herpics img{width: 60%;}
+  #herwords { text-align: center; padding:10px; background: rgba(225,225,225,1); color: #4B1414; }
+  #herwords li { padding:3px; margin:3px; background: #ffffff; }
+  #herwords li a {  padding:3px; margin:3px; background: #adadad; color: maroon; }
+  #replyc a{ margin: 30px;}
+</style>
+<body><audio autoplay src="../../var/audio/luluby.mp3"> </audio>
+
+      <p id="herpics"></p>
+      <p id="herwords"></p>
+
+      <p id="replyc"></p>
+
+
+<script>
+   var herwords = document.getElementById("herwords");
+   var herpics = document.getElementById("herpics");
+   var replyc = document.getElementById("replyc");
+
+var word0 = " welcome,  how are you? ";
+var word1 = "have you done your daily todo?"
+                 +"<p><a href='../../page/sremng.html'>to Finish</a>  <a href='../faim1/done.htm'>4Assign</a>  <a href='../../page/sresch.html'>timeLine<sub>(G/standard)</sub></a> <a href='../faim1/lib/listWork.html'>Responsiblity</a></p>";
+var word2 = "thats welldone for you! ";
+      var word2alta = "what happened? are you ok? ..."
+                       +"<a href=''>purpose</a>";
+var word3 = "keep your Integrity, your progress is wonderful and honorable! ";
+var word4 = "I like your hardworking, tell me the stories how you strugle and strike allthose Lazyness,it must be Interesting ,right? ";
+var word5 = " well dont push your self too hard,..."
+var word6 = "....<br>And I'm always here, I will serve as much as I can if you looking for me";
+    var replyc0 = "<a onclick='retouch1()'>I'm fine</a>" ///ini "var = 1+function()" karena memanggilnya bersamaan sama. 
+                            +"<a onclick='retouch2alta()'>a little bit confused </a>";
+    var replyc1 = "<a onclick='retouch2()'>yes</a>"
+                            +"<a onclick='retouch5()'>No</a>";
+    var replyc2 = "<a onclick='retouch3()'>Next</a>";
+           var replyc2alta = "<a onclick='retouch3()'>No,  I'm Ok... </a>";
+    var replyc3 = "<a onclick='retouch4()'>Next</a>";
+    var replyc4 = "<a onclick='retouch5()'>Next</a>";
+    var replyc5 = "<a onclick='retouch6()'>Next</a>";
+     var replyc6 = "<a onclick='retouch1()'>Repeat</a>";
+ 
+
+    herpics.innerHTML = "<img src='../../var/i/fc_main.png'>";
+    herwords.innerHTML = word0;
+    replyc.innerHTML = replyc0;
+
+function retouch1(){ 
+herwords.innerHTML = word1;replyc.innerHTML = replyc1; 
+}
+function retouch2(){ 
+herwords.innerHTML = word2;replyc.innerHTML = replyc2; 
+}function retouch2alta(){ 
+herwords.innerHTML = word2alta;replyc.innerHTML = replyc2alta; 
+}
+function retouch3(){ 
+herwords.innerHTML = word3;replyc.innerHTML = replyc3; 
+}
+function retouch4(){ 
+herwords.innerHTML = word4;replyc.innerHTML = replyc4; 
+}
+function retouch5(){ 
+herwords.innerHTML = word5;replyc.innerHTML = replyc5; 
+}
+function retouch6(){ 
+herwords.innerHTML = word6;replyc.innerHTML = replyc6; 
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
