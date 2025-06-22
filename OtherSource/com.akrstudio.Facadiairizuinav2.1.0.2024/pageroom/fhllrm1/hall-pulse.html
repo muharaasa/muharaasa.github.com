@@ -1,0 +1,86 @@
+<html> <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">    <meta name="viewport" content="width=device-width, user-scalable=no" />  </head><link rel="stylesheet" type="text/css" href="../custom.css">
+
+	<link rel="stylesheet" type="text/css" href="sc/w3.css">
+<script type="text/javascript" src="#"> </script>
+
+<body style="font-size:6pt;">
+<style>
+body{font-size:8px;color:white;background:#000000;border:maroon;padding:5px;}
+body img{margin:5px; width: 100%;} .mySlides{height: 400px;}</style>
+<audio src='aud/AE_impulse.mp3' autoplay loop></audio>
+
+<div class="w3-content w3-display-container" align="center">
+
+              <img class="mySlides" src="view/images.jpg">
+              <img class="mySlides" src="view/images(1).jpg">
+              <img class="mySlides" src="view/images(3).jpg">
+              <img class="mySlides" src="view/images(4).jpg">
+              <img class="mySlides" src="view/images(5).jpg">
+              <img class="mySlides" src="view/images(6).jpg">
+              <img class="mySlides" src="view/images(7).jpg">
+              <img class="mySlides" src="view/images(8).jpg">
+              <img class="mySlides" src="view/images(9).jpg">
+              <img class="mySlides" src="view/images(10).jpg">
+              <img class="mySlides" src="view/images(11).jpg">
+             <img class="mySlides" src="../../var/i/fc_writing.gif">
+  <button class="w3-button w3-black w3-display-left" onclick="plusDivs(-1)">&#10094;</button>
+  <button class="w3-button w3-black w3-display-right" onclick="plusDivs(1)">&#10095;</button>
+</div>
+
+
+<p style="font-family: Times New Roman , San Serif;">
+		<span id="jam"></span>
+		<span id="menit"></span>
+		<span id="detik"></span>
+      <span style='z-index:3; position: absolute; right: 10px;font-style: italic;;'> I/Z ~ [<u id='asa'>-999</u>]</span> <p>
+<script type='text/javascript'>
+var interval=setInterval(function() {
+var nilainya = document.getElementById('asa').innerHTML;
+var hasilnya = ++nilainya;
+document.getElementById('asa').innerHTML = hasilnya;
+},33);
+</script>
+<script type='text/javascript'>
+	window.setTimeout("waktu()", 1000);
+	function waktu() {
+		var waktu = new Date();
+		setTimeout("waktu()", 1000);
+		document.getElementById("jam").innerHTML = waktu.getHours();
+		document.getElementById("menit").innerHTML = waktu.getMinutes();
+		document.getElementById("detik").innerHTML = waktu.getSeconds();
+	}
+</script>
+
+
+<center><iframe style="height: 100px; border: 0px solid red ;width: 98%;" src='carnation.html'></iframe></center>
+<center><hr color='white'>Audio source : Alter Ego - Impulse (Fan made Soundtrack) by lemo020
+
+<script>
+var slideIndex = 1;
+showDivs(slideIndex);
+
+function plusDivs(n) {
+  showDivs(slideIndex += n);
+}
+
+function showDivs(n) {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  if (n > x.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = x.length}
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";  
+  }
+  x[slideIndex-1].style.display = "block";  
+}
+</script>
+
+
+<!--unwanted object
+<script src="../../var/js/star_shad.js"></script>
+<script type="text/javascript">
+	var e = document.getElementById('rainDropContainer');
+	var r = rainDrop({total:3, time: 1000, color:[], type:'wave', direction: 'alternate-reverse'});
+	e.appendChild(r);
+</script>
+-->

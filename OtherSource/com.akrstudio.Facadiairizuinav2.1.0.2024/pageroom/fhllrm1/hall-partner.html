@@ -1,0 +1,39 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no" />
+<style >
+body{background-image: url("../../var/i/sky0.jpg");
+            background-repeat: no-repeat; 
+            background-attachment : center;
+            background-size: cover ;color: black;
+            overflow : scroll;font-size:9pt;text-align:justify;padding:10px}
+#asa{color: maroon;}
+#idasa{text-align:center;background:white;padding:5px;}
+</style>
+<head><title>impromptu</title></head>
+<body>
+<font style="font-family:cursive;">
+		<span id="jam"></span>
+		<span id="menit"></span>
+		<span id="detik"></span>
+<img style="text-align:center;width:50%;padding:5px;" src="../../var/i/sasye_logo.png">
+<audio src="aud/silent_partner.mp3" autoplay loop></audio><br>
+...<font color="#4b0000"> Just to let you know</font><br>
+.............<font color="darkgrey">I've always there</font><br>
+..........................<font color="cyam">see u from distance..... </font><br>
+<script src="sc/star_shad.js"></script>
+<script>
+	window.setTimeout("waktu()", 1000);
+	function waktu() {
+		var waktu = new Date();
+		setTimeout("waktu()", 1000);
+		document.getElementById("jam").innerHTML = waktu.getHours();
+		document.getElementById("menit").innerHTML = waktu.getMinutes();
+		document.getElementById("detik").innerHTML = waktu.getSeconds();
+	}
+var jamsekarang = document.getElementById("jam").innerHTML;
+		document.getElementById("greetza").innerHTML = jamsekarang;
+</script>
+<img src='../../var/i/fcFade.png' style="position:absolute;right:10px;bottom:0px;width:60%">
+</body>
+</html>
