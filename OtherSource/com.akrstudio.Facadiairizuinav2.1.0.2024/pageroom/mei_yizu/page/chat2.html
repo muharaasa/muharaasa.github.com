@@ -1,0 +1,85 @@
+<html> <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">    <meta name="viewport" content="width=device-width, user-scalable=no" />  </head>
+<body style="font-size:6pt;padding:5px;background:black">
+<span id="audioplayed"><audio autoplay loop src="../lib/audio/sab"></audio></span>
+
+<center><img src="../lib/img/whyulook.png" width="60%">
+<p style="color:white;font-size:9pt;">Facadia Irizuina</p>
+<div class="fashacha" id="answer">Hai Iriz!<br></div></center>
+
+<script type='text/javascript' src='../lib/y.js' id="yjs"></script>
+<div class="fashacha" id="message">
+...................................(Hi! ^_^)<br>
+</div>
+<script type='text/javascript' src='../lib/x.js' id="xjs"></script>
+
+
+
+
+<style>
+button{margin:3px;background:white;border:1px dotted black;color:maroon;font-family:serif;padding:3px;font-size:6pt;width:93px;}
+.fashacha{margin:3px;width:86%;padding:10px;color:black;}
+#message{background: #FFFFFF;}
+#answer{background: #A39F9F;}
+</style>
+
+
+<script>
+var massagvar = document.getElementById("message");
+var answervar = document.getElementById("answer");
+var buttonyes = "<button onclick='ifsayyes()'>yes</button>"
+var buttonno = "<button onclick='ifsayno()'>no</button>"
+
+function optwaiter(){
+answervar.style.display = "none";
+setTimeout(function(){answervar.style.display = "block";},1500);
+}
+
+
+
+
+
+
+setTimeout(function(){massagvar.innerHTML = "(look at you with warm gaze)<br>.....<br>Hai...!<br> ada sesuatu yang ingin kau katakan?<br>";},5000);
+setTimeout(function(){answervar.innerHTML = buttonyes+buttonno;},7000);
+
+
+function ifsayyes(){
+optwaiter();
+answervar.innerHTML = "you say yes";
+massagvar.innerHTML = "....";
+setTimeout(function(){massagvar.innerHTML = "yes, there is,Another option? ";},2000);
+setTimeout(function(){answervar.innerHTML = "<button onclick='restarone()'>Restart?</button> ";},5000);
+}
+
+function ifsayno(){
+optwaiter();
+answervar.innerHTML = "<button onclick='restarone()'>Ok..?</button>";
+massagvar.innerHTML = "if that so,please enjoy your time... dont waste it... <br>^_^ gotcha.... ";
+}
+
+
+function restarone(){
+optwaiter();
+answervar.innerHTML = "....";
+massagvar.innerHTML = "....";
+setTimeout(function(){answervar.innerHTML = "Hi, Iriz!";},2000);
+setTimeout(function(){massagvar.innerHTML = "(loading)";},3000);
+setTimeout(function(){massagvar.innerHTML = "(look at you with warm gaze)<br>.....<br>Hai...!<br> ada sesuatu yang ingin kau katakan?<br>";},5000);
+setTimeout(function(){answervar.innerHTML = buttonyes+buttonno;},7000);
+}
+
+
+</script>
+<!----
+skema:
+auto->[begin]-(yes)>ifsayyes-(restart)>restarone->[begin]
+auto->[begin]-(no)>ifsayno-(ok)>restarone->[begin]
+
+auto:loading only
+[begin]:setTimeup msg;answer
+(choosen)
+->function executed->
+
+
+note: @function ,linked on optwaiter()
+----->
