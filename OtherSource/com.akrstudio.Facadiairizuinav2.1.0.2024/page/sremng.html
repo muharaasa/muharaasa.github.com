@@ -1,0 +1,173 @@
+<html> <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no" />  </head><link rel="stylesheet" type="text/css" href="../custom.css">
+
+<link rel="stylesheet" type="text/css" href="../var/js/Chart.min.css"> 
+<script type="text/javascript" src="../var/js/Chart.min.js"> </script>
+
+<body style="font-size:6pt;">
+
+
+
+<audio autoplay src="../var/snd/dive.wav"> </audio>
+
+
+<table width="100%" class="menu" ><tr><td> <a href="#mng"> <font class="menuf">Management And statistic </font></a></td></tr></table>
+
+<center><img src="fc.pp.png" onclick="alert('I hope you are fine,...you can confess or conversate with me in the right time and place ... ');" class="mascot"></center>
+
+<table width="100%" class="menu" ><tr><td> <font class="menuf"><p id="greetings">Hallo again</p></font></td></tr></table>
+<table class="say" ><tr><td><font class="say"><p id="talk">thank you for came in.....<br>Lets talk about statistics and difference we have made<br>if the result is better,...keep going<br>if the result is bitter,...dont giving up</p></font></tr></td></font><tr><td></center>
+<li> <u><font onclick="showlist()" class="say">Said something.......</font></li></u><p id="list"></p>
+</table>
+
+<table width="100%" class="menu" ><tr><td> <font class="menuf">Daily Status</font></td></tr></table>
+<table class="say" ><tr><td><font class="say"><center><p id="progress">
+<img src="../fc.pp.png" width="50px">
+<img src="../fc.pp.png" width="50px">
+<img src="../fc.pp.png" width="50px">
+<img src="../fc.pp.png" width="50px">
+<img src="../fc.pp.png" width="50px">
+
+<!-----(stars exp progresss)----></p></center><br>
+<center style='color:maroon;font-size:7pt;'>
+<!--its all because on development-->
+<img src="../fc.pp.png" width="30px"><input  type="text" style='width:155px;color:purple;font-size:7pt;padding: 4px;' id="nama"/> <button id="isikan">add()</button><button id="ambil">show()</button><button id="hapus">delete()</button>
+<p id="pesan"></p>
+<ol id="tampilan"></ol>
+
+<style>#tampilan li{padding:10px;margin:10px;color: black;background: white;border-radius:5px;}
+#isikan, #ambil,#hapus{color:purple;font-size:7pt;}
+</style>
+	<script>
+function yallow(){var audio = new Audio('../var/snd/allowed.wav'); audio.play(); }
+function xreject(){var audio = new Audio('../var/snd/denied.wav'); audio.play(); }
+function sshowclear(){var audio = new Audio('../var/snd/clearUp.wav'); audio.play(); }
+
+	document.querySelector('#isikan').addEventListener('click',function(e)
+	{	
+		let siswa_baru = document.querySelector('#nama');
+		
+		let daftar_nama;
+		if (localStorage.getItem('daftar_nama')===null)
+		{
+			daftar_nama = [];
+		}
+		else
+		{
+			daftar_nama = JSON.parse(localStorage.getItem('daftar_nama'));	
+		}
+		
+		daftar_nama.push(siswa_baru.value);	
+		localStorage.setItem('daftar_nama',JSON.stringify(daftar_nama));
+		
+		let pesan = document.querySelector('#pesan');		
+		pesan.innerHTML = siswa_baru.value + " berhasil disimpan";yallow();
+	});
+
+
+	document.querySelector('#ambil').addEventListener('click',function(e)
+	{		
+		let tampilan = document.querySelector('ol#tampilan');
+	
+		daftar_nama = JSON.parse(localStorage.getItem('daftar_nama'));
+		daftar_nama.forEach(function(nama){
+			let myli = document.createElement('li');
+			//console.log(nama);
+			myli.innerHTML = nama;
+			tampilan.appendChild(myli);
+		});
+		sshowclear();
+	});
+
+	document.querySelector('#hapus').addEventListener('click',function(e)
+	{	
+		let siswa_baru = document.querySelector('#nama');
+		
+		let daftar_nama;
+		if (localStorage.getItem('daftar_nama')===null)
+		{
+			daftar_nama = [];
+		}
+		else
+		{
+			daftar_nama = JSON.parse(localStorage.getItem('daftar_nama'));	
+		}
+		
+		daftar_nama.pop(siswa_baru.value);	
+		localStorage.setItem('daftar_nama',JSON.stringify(daftar_nama));
+		
+		let pesan = document.querySelector('#pesan');		
+		pesan.innerHTML = " deleted";xreject();
+		
+		let tampeel = document.querySelector('#tampilan');		
+		tampeel.innerHTML = "";
+	});
+
+	</script>
+
+
+</center>
+<center><p id="graphic">(graphic)</p><br></center>
+
+
+<div style="width: 320px;max-height:600px;overflow:scroll;;font-size:4pt;" > 
+<canvas id="myChart"></canvas> 
+</div> 
+
+<script>
+
+ var barChartData = { 
+labels: [ "Irizuina", "LeissenID", "Aimer" ], 
+datasets: [ { label: "SRE", 
+                        backgroundColor: "white", 
+                        borderColor: "navy", 
+                        borderWidth: 1, 
+                        data: [8, 7, 6] }, 
+                    { label: "SCT", 
+                        backgroundColor: "magenta", 
+                        borderColor: "purple", 
+                        borderWidth: 1, 
+                        data: [5, 6, 7] }, 
+                   { label: "AKR", 
+                        backgroundColor: "red", 
+                        borderColor: "maroon", 
+                        borderWidth: 1, 
+                        data: [5,6,8] }, 
+                  { label: "Leiss", 
+                        backgroundColor: "gray", 
+                        borderColor: "black", 
+                        borderWidth: 1, data: [7,8,6] } 
+                 ] 
+               }; 
+
+
+var chartOptions = { 
+                        responsive: true, 
+                        legend: { position: "top" }, 
+                        title: { display: true, text: "Time Management Statistic" }, 
+                        scales: { 
+                                         yAxes: [{ ticks: { beginAtZero: true } }] 
+                                       }
+                                    } 
+
+var ctx = document.getElementById("myChart").getContext("2d"); 
+window.myBar = new Chart(
+                        ctx, {
+                         type: "bar", 
+                        data: barChartData, 
+                        options: chartOptions 
+                                 }
+                        ); </script> 
+
+
+<ul>
+<li class='aidies'>weekly reports | Management <a href='static.mainframe/sumform_report.htm'>reform H/M/Rizasa</a></li>
+<li class='aidies'>Leissure time | a notation <a href='../pageroom/faim1/done.htm'>reform 4-AIM</a></li>
+</ul><style>
+.aidies{background: rgba(50,50,50,0.8);color: red;padding: 10px; margin: 10px;}
+.aidies:active{background: #000000; color: red;}.aidies:hover{margin-right: 20px;margin-left:0px; color: blue;}
+.aidies a{text-decoration: none; color: white;}</style>
+<p id="historyresult"><li>history list</li>
+<!---<style> iframe{overflow:scroll; background:rgba(200,200,200,0.9);height:400px; width:95%; padding:2px;margin:5px;border: maroon 1px solid;}</style>
+<iframe src="https://duckduckgo.com"><iframe>--->
+</p>

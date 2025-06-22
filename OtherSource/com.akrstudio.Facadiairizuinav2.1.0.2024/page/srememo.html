@@ -1,0 +1,110 @@
+<html> <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no" />  </head>
+
+
+<body style="font-size:6pt; background: black; color: white; font-family: serif;">
+<audio autoplay src="../var/audio/luluby.mp3"> </audio>
+
+
+
+<center class='top_styles'>
+   <img src="../var/lib/burnrose.gif" style='position:relative;right:0px;left:0px;width:100%;' onclick="alert('I hope you are fine,...you can confess or conversate with me in the right time and place ... ');">
+ </center>
+
+ 
+<!--its all because on development-->
+ 
+   
+ 
+  <textarea  type="text" style='font-family: serif; width: 300px ;color: maroon;font-size:7pt;padding: 10px;' id="nama"></textarea>
+    <p align='right'><button id="isikan">add()</button><button id="ambil">show()</button><button id="hapus">delete()</button></p>
+    <p id="pesan"></p><ul id="tampilan"></ul></p>
+<style>#tampilan{padding:10px;margin: 5px;color: maroon;background: #E4E4E4;border: solid maroon 0.5pt;}
+#isikan, #ambil,#hapus{background: #EDEDED; color: maroon;font-size:7pt;border: solid white 0.5pt; padding-top:10px; padding-bottom: 10px;}
+li{text-align: left; background: white;color: maroon;padding: 10px; margin: 10px;}
+li:active{background: #C2C1C4; color: red;}
+li:hover{margin-right: 7px;margin-left: 7px; background : #C7E7E7;color: #000000;}
+</style>
+
+
+
+<center style='color:maroon;font-size:7pt;'>
+ <img src="../var/i/sasye_logo.png" width="130px"><br>
+<font class="say"><center><p id="progress">
+<img src="../fc.pp.png" width="50px">
+<img src="../fc.pp.png" width="50px">
+<img src="../fc.pp.png" width="50px">Asa dikataasa 
+<img src="../fc.pp.png" width="50px">
+<img src="../fc.pp.png" width="50px">
+<!-----(stars exp progresss)----></p></center><br>
+
+
+
+	<script>
+function yallow(){var audio = new Audio('../var/audio/gotcha.mp3'); audio.play(); }
+function xreject(){var audio = new Audio('../var/audio/cancel.mp3'); audio.play(); }
+function sshowclear(){var audio = new Audio('../var/audio/hh.mp3'); audio.play(); }
+
+	document.querySelector('#isikan').addEventListener('click',function(e)
+	{	
+		let jejak_baru = document.querySelector('#nama');
+		
+		let jalur_setapak;
+		if (localStorage.getItem('jalur_setapak')===null)
+		{			jalur_setapak = [];		}
+		else
+		{			jalur_setapak = JSON.parse(localStorage.getItem('jalur_setapak'));			}
+		
+		jalur_setapak.push(jejak_baru.value);	
+		localStorage.setItem('jalur_setapak',JSON.stringify(jalur_setapak));
+		
+		let pesan = document.querySelector('#pesan');		
+		pesan.innerHTML = jejak_baru.value + " berhasil disimpan";yallow();
+	   refreshjejak_kata();
+});
+
+
+	document.querySelector('#ambil').addEventListener('click',function(e)
+	{				refreshjejak_kata();		sshowclear();	}
+);
+
+	document.querySelector('#hapus').addEventListener('click',function(e)
+	{	
+		let jejak_baru = document.querySelector('#nama');
+		let jalur_setapak;
+		if (localStorage.getItem('jalur_setapak')===null)
+		{			jalur_setapak = [];		}
+		else
+		{			jalur_setapak = JSON.parse(localStorage.getItem('jalur_setapak'));			}
+		
+		jalur_setapak.pop(jejak_baru.value);	
+		localStorage.setItem('jalur_setapak',JSON.stringify(jalur_setapak));
+		
+		let pesan = document.querySelector('#pesan') ;		
+		pesan.innerHTML = " deleted";xreject(); 
+      refreshjejak_kata();
+
+	});
+
+   function refreshjejak_kata(){		
+      ///menghapus penampilan kini
+		let tampeel = document.querySelector('#tampilan');		
+		tampeel.innerHTML = "";
+
+	     ///kembali menjalankan fungsi show()
+		let tampilan = document.querySelector('#tampilan');
+
+		jalur_setapak = JSON.parse(localStorage.getItem('jalur_setapak'));
+		jalur_setapak.forEach(function(nama){
+			let myli = document.createElement('li');
+			//console.log(nama);
+			myli.innerHTML = nama;
+			tampilan.appendChild(myli);
+		});
+setTimeout(function(){ document.querySelector('#pesan').innerHTML = ""; }, 1000);
+
+		}
+	</script>
+
+
+
