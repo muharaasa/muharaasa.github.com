@@ -1,0 +1,61 @@
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"> 
+   <meta name="viewport" content="width=device-width, user-scalable=no" />
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" type="text/css" href="var/css/">
+</head>
+<style>
+@keyframes redupterang {
+ 	0%,75%{ background : #d0d0d0;
+            background-repeat: no-repeat; 
+            background-attachment : center;
+            background-size: cover ;}
+     25%{background : black;
+            background-repeat: no-repeat; 
+            background-attachment : center;
+            background-size: cover;} 
+     50% { background : navy;
+            background-repeat: no-repeat; 
+            background-attachment : center;
+            background-size: cover; }
+ } 
+body,html{ background-image: linear-gradient(to bottom right, #4B1414,maroon,black);
+            font-size:7pt;font-family:serif;padding:10px;};
+            
+table {
+            color:white;
+            font-family:verdana,serif;
+            font-size:7pt;text-align:center;}
+table a{color:red;text-decoration:none;}
+x{animation: redupterang 10s infinite;}
+
+.musicList{;margin:5px;background: rgba(0,0,0,0.8); color: white;}
+.musicList li{border-bottom: 1px aqua solid; margin: 5px; padding:5px;}
+.musicList p{background:#000000;text-align: center;padding: 7px;}
+.musicList li:hover{animation: redupterang 10s infinite;
+            background-repeat: no-repeat; 
+            background-attachment : center;
+            background-size: cover ; }
+</style>
+<div class='musicList'>
+<p>Music source @YouTube</p>
+     <li onclick="ithe1()">carillonOK.wav</li>
+     <li onclick="ithe2()">Beautiful Chemistry - Fluorescent Chemicals (New Music)</li>
+     <li onclick="ithe3()">(FREE) chill_lofi type beat _roses_ by (sun spook)</li>
+     <li onclick="ithe4()">Interstellar theme with my 7 yr old daughter</li>
+<p>Close</p></div>
+<span id="audioplayedID"><audio src='theme_l.mp3' autoplay></audio></span>
+
+<script type="text/javascript">
+var audPlayed = document.getElementById("audioplayedID");
+   function ithe1(){audPlayed.innerHTML = "<audio src='carillonOK.wav' loop autoplay></audio>";}
+   function ithe2(){audPlayed.innerHTML = "<audio src='theme_c.mp3' loop autoplay></audio>";}
+   function ithe3(){audPlayed.innerHTML = "<audio src='theme_l.mp3' loop autoplay></audio>";}
+   function ithe4(){audPlayed.innerHTML = "<audio src='theme_i.mp3' loop autoplay></audio>";}
+</script>
+</body>
+</html>
+
+
+
