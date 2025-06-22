@@ -1,0 +1,196 @@
+<html> <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">    <meta name="viewport" content="width=device-width, user-scalable=no" />  </head>
+<body style="font-size:6pt;padding:5px;background:black">
+<span id="audioplayed"><audio autoplay loop src="../lib/audio/sab"></audio></span>
+<style>#facimg img{width:60%}</style>
+
+<center>
+<p id='thinker'>(humm..) </p>
+<p id='facimg'><img src="../lib/img/whyulook.png" onclick='facacli1()'></p>
+<p id='fadnie'>Facadia Irizuina</p>
+
+<div class="fashacha" id="answer">.......<br></div>
+</center>
+
+<script type='text/javascript' src='../lib/y.js' id="yjs"></script>
+<div class="fashacha" id="message">
+..........................................<br>
+</div>
+<script type='text/javascript' src='../lib/x.js' id="xjs"></script>
+
+
+
+
+<style>
+button{width:80%;margin:3px;background:white;border:1px dotted black;color:maroon;font-family:serif;padding-top:5px;padding-bottom:5px;font-size:6pt;}
+button:active{background:#000000}
+.fashacha{margin:3px;width:86%;padding:10px;color:black;}
+#message{background: #FFFFFF;}
+#answer{background: #A39F9F;}
+#thinker, fadnie{color:white;font-size:9pt;}
+</style>
+<script>
+var thinker = document.getElementById("thinker");
+var facimg = document.getElementById("facimg");
+var fadnie = document.getElementById("fadnie");
+var massagvar = document.getElementById("message");
+var answervar = document.getElementById("answer");
+
+
+
+function facacli1(){
+facimg.innerHTML="<img src='../lib/img/whyulook.png' onclick='facacli2()'>";
+thinker.innerHTML="...";
+}
+function facacli2(){
+facimg.innerHTML="<img src='../lib/img/whyulook.png' onclick='facacli3()'>";
+thinker.innerHTML="....";
+}
+function facacli3(){
+facimg.innerHTML="<img src='../lib/img/whyulook.png' onclick='facacli4()'>";
+thinker.innerHTML="um?";
+}
+function facacli4(){
+facimg.innerHTML="<img src='../lib/img/whyulook.png' onclick='facacli5()'>";
+thinker.innerHTML="hm? ";
+}
+function facacli5(){
+facimg.innerHTML="<img src='../lib/img/whyulook.png' onclick='facacli6()'>";
+thinker.innerHTML="...";
+}
+function facacli6(){
+facimg.innerHTML="<img src='../lib/img/whyulook.png' onclick='facacli7()'>";
+thinker.innerHTML="mind your own business!";
+}
+function facacli7(){
+facimg.innerHTML="<img src='../lib/img/whyulook.png' onclick='facacli8()'>";
+thinker.innerHTML="eish!";
+}
+function facacli8(){
+facimg.innerHTML="<img src='../lib/img/whyulook.png' onclick='facacli9()'>";
+thinker.innerHTML="what are you doing? ";
+}
+function facacli9(){
+facimg.innerHTML="<img src='../lib/img/whyulook.png' onclick='facacli10()'>";
+thinker.innerHTML="stop it";
+}
+function facacli10(){
+facimg.innerHTML="<img src='../lib/img/whyulook.png' onclick='facacli11()'>";
+thinker.innerHTML="please....";
+}
+function facacli11(){
+facimg.innerHTML="<img src='../lib/img/whyulook.png' onclick='facacli12()'>";
+thinker.innerHTML="•_• ";
+}
+function facacli12(){
+facimg.innerHTML="<img src='../lib/img/whyulook.png' onclick='facacli13()'>";
+thinker.innerHTML="~please....";
+}
+function facacli13(){
+facimg.innerHTML="<img src='../lib/img/whyulook.png' onclick='facacli14()'>";
+thinker.innerHTML="~_~";
+}
+function facacli14(){
+facimg.innerHTML="<img src='../lib/img/whyulook.png' onclick='facacli15()'>";
+thinker.innerHTML="stop it";
+}
+function facacli15(){
+facimg.innerHTML="<img src='../lib/img/whyulook.png' onclick='facacli16()'>";
+thinker.innerHTML="eish!";
+}
+function facacli16(){
+facimg.innerHTML="<img src='../lib/img/whyulook.png' onclick='facacli17()'>";
+thinker.innerHTML="I SAID STOP! ";
+}
+function facacli17(){
+facimg.innerHTML="<img src='../lib/img/whyulook.png' onclick='facacli18()'>";
+thinker.innerHTML="Enaughil,I think i can't join conversation right now";
+}
+function facacli18(){
+facimg.innerHTML="<img src='../lib/img/whyulook.png' onclick='facacli19()'>";
+thinker.innerHTML="One more time and I'm Leaving ";
+}
+function facacli19(){
+facimg.innerHTML="<img src='../lib/img/whyulook.png' onclick='facacli20()'>";
+thinker.innerHTML="OK,";
+}
+function facacli20(){
+answervar.style.display="none";
+massagvar.style.display="none";
+facimg.style.display="none";
+thinker.innerHTML="bye,";
+fadnie.innerHTML="<i><u style='font-size:5pt;'>FacaDeA</u></i>,";
+}
+
+
+
+
+
+var chase1a = "<button onclick='reschase1a()'>yes</button>";
+var chase1b = "<button onclick='reschase1b()'>no</button>";
+var chase1 = chase1a+chase1b;
+
+var boredword ="<br><b>hurry.... I'm waiting you....</b>...";
+
+function optwaiter(){
+thinker.innerHTML = "....";
+answervar.style.display = "none";
+setTimeout(function(){answervar.style.display = "block";},1000);
+setTimeout(function(){thinker.innerHTML = boredword;},60000);
+}
+
+
+setTimeout(function(){massagvar.innerHTML = "(look at you with warm gaze)<br>.....<br>Hai...!<br> ada sesuatu yang ingin kau katakan?<br>";},7000);
+setTimeout(function(){answervar.innerHTML = chase1;},7000);
+
+
+function reschase1a(){
+optwaiter();
+answervar.innerHTML = "you say yes";
+massagvar.innerHTML = "....";
+setTimeout(function(){massagvar.innerHTML = "yes, there is,Another option? ";},2000);
+setTimeout(function(){answervar.innerHTML = "<button onclick='tochase1()'>Restart?</button> ";},3000);
+}
+
+function reschase1b(){
+optwaiter();
+setTimeout(function(){answervar.innerHTML = "<button onclick='tochase1()'>Ok..?</button>";},2000);
+setTimeout(function(){massagvar.innerHTML = "if that so,please enjoy your time... dont waste it... <br>^_^ gotcha.... ";},3000);
+}
+
+
+function tochase1(){
+optwaiter();
+answervar.innerHTML = "....";
+massagvar.innerHTML = "....";
+setTimeout(function(){answervar.innerHTML = "Hi, Iriz!";},1500);
+setTimeout(function(){massagvar.innerHTML = "(look at you with warm gaze)<br>.....<br>Hai...!<br> ada sesuatu yang ingin kau katakan?<br>";},2000);
+setTimeout(function(){answervar.innerHTML = chase1;},3000);
+}
+
+
+</script>
+<!----
+skema:
+auto->[begin=chase1]-(chase1a)>reschase1a-(restart)>tochase1->[begin]
+auto->[begin=chase1]-(chase2b)>reschase1b-(ok)>tochase1->[begin]
+
+auto:loading only
+[begin]:setTimeup msg;answer
+(choosen)
+->function executed->
+
+
+note: @function ,linked on optwaiter()
+
+
+key:
+reschase: new Chase as Result of respond in prevent chase
+variable only contain chase for answer fill (Already to Answer) 
+function only contain chase for massage fill (edit massage directly)
+t1 = optwaiter
+(t1.5 = optional addition)
+t2 = massage appear
+t3 = answer display 
+t4 = (blanking) 
+t5 = newchase
+----->
