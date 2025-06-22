@@ -1,0 +1,32 @@
+
+
+.marienada{opacity: 0.4;}.marienada:hover{opacity: 1.0;}
+* { margin:0; padding:0; } 	
+
+
+
+.text_mariada { font-weight:200px; font-size:20px;  color:#3e6a06; text-shadow: -1px -1px 1px grey, -1px -1px 3px grey, 1px 1px 1px silver, 1px 1px 3px silver, 1px -1px 1px grey, -1px 1px 1px grey; } 
+
+.smariada { width: 100%; overflow:hidden; -webkit-animation: typing 5s steps(70, end); animation: animasi-ketik 5s steps(70, end); } @keyframes animasi-ketik{ from { width: 0; } } @-webkit-keyframes animasi-ketik{ from { width: 0; } } 
+
+.mariada-1, .mariada-2, .mariada-3, .mariada-4 { 	position: bottom; display: block; 	top: 2em; 	
+transparent; 
+width: 60%; 
+font-family: 'Merienda'; 	font-size: 24px; 	
+animation-duration: 15s; 	animation-timing-function: ease-in-out; 	animation-iteration-count: infinite; } 
+
+
+.mariada-1{ 	animation-name: anim-1; }
+.mariada-2{ 	animation-name: anim-2; } 
+.mariada-3{ animation-name: anim-3; } 
+.mariada-4{ animation-name: anim-4; } 
+
+@keyframes anim-1 { 	0%, 8.3% { left: -100%; opacity: 0; } 8.3%,25% { left: 25%; opacity: 1; } 33.33%, 100% { left: 110%; opacity: 0; } } 
+@keyframes anim-2 { 	0%, 33.33% { left: -100%; opacity: 0; } 41.63%, 58.29% { left: 25%; opacity: 1; } 66.66%, 100% { left: 110%; opacity: 0; } } 
+@keyframes anim-3 { 0%, 65.66% { left: -100%; opacity: 0; } 61.63%, 60.29% { left: 25%; opacity: 1; } 99.66%, 100% { left: 110%; opacity: 0; } } 
+@keyframes anim-4 { 0%, 50.10% { left: -100%; opacity: 0; } 55.00%, 52.00% { left: 25%; opacity: 1; } 75.10%, 100% { left: 110%; opacity: 0; } } 
+
+body{animation-duration: 3s; 	animation-iteration-count: 1; animation-name: fasavise;}
+.seekerana{animation-duration: 10s; 	animation-iteration-count: 1; animation-name: fasavise;}
+@keyframes fasavise { 0% { opacity: 0; } 50% { opacity: 0.5; } 100% { opacity: 1.0; } } 
+
