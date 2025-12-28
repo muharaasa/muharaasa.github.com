@@ -1,0 +1,301 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Line Extractor — Advanced RGB Modes</title>
+
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,Roboto}
+body{display:flex;gap:18px;padding:18px;background:#111;color:#eee}
+.ui{width:360px}
+.card{background:#161616;padding:14px;border-radius:10px}
+label{display:block;margin-top:8px;font-size:13px;color:#cfcfcf}
+input[type=range]{width:100%}
+select,input[type=color]{width:100%}
+canvas{max-width:100%;border-radius:6px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+button{background:#0b84ff;color:white;padding:8px;border-radius:8px;border:0;cursor:pointer}
+.preview-bg{border-radius:6px;overflow:hidden}
+.preview-bg.checker{
+  background:
+    linear-gradient(45deg,#333 25%,transparent 25%),
+    linear-gradient(-45deg,#333 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,#333 75%),
+    linear-gradient(-45deg,transparent 75%,#333 75%);
+  background-size:16px 16px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="ui card">
+<h3>Line Extractor</h3>
+
+<label>Load image</label>
+<input id="file" type="file" accept="image/*">
+
+<label>Tolerance</label>
+<input id="tol" type="range" min="0" max="300" value="60">
+
+<label>Thickness</label>
+<input id="thick" type="range" min="0" max="8" value="1">
+
+<label>Neighbor</label>
+<select id="mode">
+<option value="4">4-neighbor</option>
+<option value="8">8-neighbor</option>
+</select>
+
+<label>Preview background</label>
+<div style="display:flex;gap:8px">
+<input id="bgColor" type="color" value="#1e1e1e">
+<button id="checkerBtn">Checker</button>
+</div>
+
+<label>Color mode</label>
+<select id="colorMode">
+<option value="solid">Solid</option>
+<option value="gradient-rgb">Gradient RGB</option>
+<option value="gradient-hsv">Gradient HSV</option>
+<option value="direction-x">Direction X</option>
+<option value="direction-y">Direction Y</option>
+<option value="luma">Luminance</option>
+<option value="posterized">Posterized</option>
+<option value="random">Random Stable</option>
+<option value="source">From Source</option>
+</select>
+
+
+<label>Solid color</label>
+<input id="lineColor" type="color" value="#000000">
+
+<label>Direction color A</label>
+<input id="dirColorA" type="color" value="#ff0000">
+
+<label>Direction color B</label>
+<input id="dirColorB" type="color" value="#0000ff">
+
+
+<div class="controls">
+<button id="download">Download .png</button>
+<button id="downloadJpg">Download .JPG</button>
+<button id="reset">Reset</button>
+</div>
+</div>
+
+<div class="card" style="flex:1">
+<label>Original</label>
+<canvas id="src"></canvas>
+
+<label>Output</label>
+<div id="wrap" class="preview-bg checker">
+<canvas id="out"></canvas>
+</div>
+</div>
+
+<script>
+const src=document.getElementById('src');
+const out=document.getElementById('out');
+const sctx=src.getContext('2d');
+const octx=out.getContext('2d');
+
+const tol=document.getElementById('tol');
+const thick=document.getElementById('thick');
+const mode=document.getElementById('mode');
+const colorMode=document.getElementById('colorMode');
+const lineColor=document.getElementById('lineColor');
+const wrap=document.getElementById('wrap');
+const bgColor=document.getElementById('bgColor');
+
+let img=new Image(),W=0,H=0,checker=true,debounce;
+
+//// ini untuk ambil warna gradasi
+function lerp(a,b,t){ return a+(b-a)*t; }
+
+function lerpColor(c1,c2,t){
+  return [
+    Math.round(lerp(c1[0],c2[0],t)),
+    Math.round(lerp(c1[1],c2[1],t)),
+    Math.round(lerp(c1[2],c2[2],t))
+  ];
+}
+
+const dirColorA = document.getElementById('dirColorA');
+const dirColorB = document.getElementById('dirColorB');
+/// 
+
+
+const clamp=(w,h,m=1200)=>{
+  const s=Math.min(1,m/Math.max(w,h));
+  return [Math.round(w*s),Math.round(h*s)];
+};
+
+const hex=c=>{
+  const n=parseInt(c.slice(1),16);
+  return [n>>16&255,n>>8&255,n&255];
+};
+
+const rand=(x,y)=>{
+  const s=(x*73856093)^(y*19349663);
+  return [s&255,s>>8&255,s>>16&255];
+};
+
+const hsv=(h)=>{
+  const i=Math.floor(h*6);
+  const f=h*6-i;
+  const q=1-f;
+  const t=f;
+  const map=[
+    [1,t,0],[q,1,0],[0,1,t],
+    [0,q,1],[t,0,1],[1,0,q]
+  ][i%6];
+  return map.map(v=>Math.round(v*255));
+};
+
+document.getElementById('file').onchange=e=>{
+  img.onload=()=>{
+    [W,H]=clamp(img.width,img.height);
+    src.width=out.width=W;
+    src.height=out.height=H;
+    sctx.drawImage(img,0,0,W,H);
+    process();
+  };
+  img.src=URL.createObjectURL(e.target.files[0]);
+};
+
+bgColor.oninput=()=>{
+  wrap.style.background=bgColor.value;
+  wrap.classList.remove('checker');
+};
+
+document.getElementById('checkerBtn').onclick=()=>{
+  checker=!checker;
+  wrap.classList.toggle('checker',checker);
+  if(checker) wrap.style.background='';
+};
+
+function process(){
+  if(!W)return;
+  const srcD=sctx.getImageData(0,0,W,H);
+  const outD=octx.createImageData(W,H);
+
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+    const i=(y*W+x)*4;
+    let max=0,edge=false;
+
+    const chk=(nx,ny)=>{
+      if(nx<0||ny<0||nx>=W||ny>=H)return false;
+      const j=(ny*W+nx)*4;
+      const d=Math.hypot(
+        srcD.data[i]-srcD.data[j],
+        srcD.data[i+1]-srcD.data[j+1],
+        srcD.data[i+2]-srcD.data[j+2]
+      );
+      max=Math.max(max,d);
+      return d>tol.value;
+    };
+
+    if(mode.value==4)
+      edge=chk(x+1,y)||chk(x-1,y)||chk(x,y+1)||chk(x,y-1);
+    else
+      for(let oy=-1;oy<=1&&!edge;oy++)
+      for(let ox=-1;ox<=1;ox++)
+        if(ox||oy) edge|=chk(x+ox,y+oy);
+
+    if(!edge) continue;
+
+    let c;
+    if(colorMode.value==='solid') c=hex(lineColor.value);
+    else if(colorMode.value==='random') c=rand(x,y);
+    else if(colorMode.value==='source')
+      c=[srcD.data[i],srcD.data[i+1],srcD.data[i+2]];
+    else if(colorMode.value==='gradient-rgb'){
+      const t=Math.min(max/441,1);
+      c=[255*t,255*(1-t),255*(1-t)];
+    }
+    else if(colorMode.value==='gradient-hsv')
+      c=hsv(Math.min(max/441,1));
+
+
+else if(colorMode.value==='direction-x'){
+  const t = x / W;
+  c = lerpColor(
+    hex(dirColorA.value),
+    hex(dirColorB.value),
+    t
+  );
+}
+else if(colorMode.value==='direction-y'){
+  const t = y / H;
+  c = lerpColor(
+    hex(dirColorA.value),
+    hex(dirColorB.value),
+    t
+  );
+}
+
+
+
+    else if(colorMode.value==='luma'){
+      const l=0.299*srcD.data[i]+0.587*srcD.data[i+1]+0.114*srcD.data[i+2];
+      c=[l,l,l];
+    }
+    else if(colorMode.value==='posterized'){
+      const q=Math.floor(max/60)*60;
+      c=[q,255-q,q/2];
+    }
+
+    outD.data.set([c[0],c[1],c[2],255],i);
+  }
+
+  octx.putImageData(outD,0,0);
+}
+
+// 🔥 LIVE AUTO PROCESS
+[tol,thick,mode,colorMode,lineColor,dirColorA,dirColorB].forEach(el=>{
+  el.oninput=()=>{
+    clearTimeout(debounce);
+    debounce=setTimeout(process,120);
+  };
+});
+
+document.getElementById('download').onclick=()=>{
+  const a=document.createElement('a');
+  a.href=out.toDataURL();
+  a.download='lines.png';
+  a.click();
+};
+
+document.getElementById('reset').onclick=()=>{
+  sctx.clearRect(0,0,W,H);
+  octx.clearRect(0,0,W,H);
+  W=H=0;
+};
+
+document.getElementById('downloadJpg').onclick = ()=>{
+  if(!W) return;
+
+  const tmp = document.createElement('canvas');
+  tmp.width = W;
+  tmp.height = H;
+  const tctx = tmp.getContext('2d');
+
+  // pakai warna background solid
+  tctx.fillStyle = bgColor.value || '#ffffff';
+  tctx.fillRect(0,0,W,H);
+
+  // gambar hasil edge di atas background
+  tctx.drawImage(out,0,0);
+
+  const a = document.createElement('a');
+  a.href = tmp.toDataURL('image/jpeg', 0.95);
+  a.download = 'lines.jpg';
+  a.click();
+};
+
+</script>
+</body>
+</html>
